@@ -1,0 +1,4 @@
+bin/
+.vscode
+.env
+resources/resources.xml

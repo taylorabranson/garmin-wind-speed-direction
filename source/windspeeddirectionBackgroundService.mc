@@ -5,9 +5,6 @@ using Toybox.Position;
 
 (:background)
 class windSpeedServiceDelegate extends System.ServiceDelegate {
-    // When a scheduled background event triggers, make a request to
-    // a service and handle the response with a callback function
-    // within this delegate.
 
     function initialize() {
         System.ServiceDelegate.initialize();
@@ -51,7 +48,7 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
                 "appid" => Application.loadResource(Rez.Strings.apikey)
             };
 
-            // GET JSON
+            // JSON
             var options = {
                 :method => Communications.HTTP_REQUEST_METHOD_GET,
                 :headers => {

@@ -1,7 +1,7 @@
 using Toybox.Application;
 using Toybox.Background;
 using Toybox.System;
-using Toybox.Time as Time;
+using Toybox.Time;
 using Toybox.WatchUi as Ui;
 
 // wind data for view

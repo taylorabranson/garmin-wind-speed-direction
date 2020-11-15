@@ -1,6 +1,6 @@
 using Toybox.WatchUi;
 using Toybox.Graphics;
-using Toybox.Position as Position;
+using Toybox.Position;
 using Toybox.Application;
 using Toybox.Math;
 
@@ -16,20 +16,14 @@ class windspeeddirectionView extends WatchUi.DataField {
         DataField.initialize();
     }
 
-    // Set your layout here. Anytime the size of obscurity of
-    // the draw context is changed this will be called.
     // function onLayout(dc) {
     // }
 
-    // Calculate a value and save it locally in this method.
-    // Note that compute() and onUpdate() are asynchronous, and there is no
-    // guarantee that compute() will be called before onUpdate().
     // function compute(info) {
-    //     System.println("View - Compute"); 
     // }
 
-    // find point along arc that fits within datafield
-    // width and height of datefield dimensions
+    // find point along arc that fits within datafield dimensions
+    // width and height of datafield dimensions
     function pointOnCircle(degree, width, height) {
         var radius;
         // determine radius based on datafield dimension

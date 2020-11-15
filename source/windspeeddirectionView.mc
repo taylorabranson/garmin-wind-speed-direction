@@ -24,7 +24,7 @@ class windspeeddirectionView extends WatchUi.DataField {
 
     // find point along arc that fits within datafield dimensions
     // width and height of datafield dimensions
-    function pointOnCircle(degree, width, height) {
+    function pointOnCircle(degree, radiusOffset, width, height) {
         var radius;
         // determine radius based on datafield dimension
         if ((width / 2) < height) {
@@ -32,6 +32,9 @@ class windspeeddirectionView extends WatchUi.DataField {
         } else {
             radius = (height / 2) - 5;
         }
+
+        // for setting a "notch" in arrow
+        radius -= (radius * (radiusOffset));
 
         // center horizontally on left half of view
         var xOffset = (width / 4);
@@ -88,9 +91,9 @@ class windspeeddirectionView extends WatchUi.DataField {
             // calculate relativeWindDirection in degrees
             // refers to direction wind originates in relation to heading
             if (heading > windDirection) {
-                relativeWindDirection = 360 + (windDirection) - heading;
+                relativeWindDirection = 360 + (windDirection) - heading + 90;
             } else if (heading <= windDirection) {
-                relativeWindDirection = (windDirection) - heading;
+                relativeWindDirection = (windDirection) - heading + 90;
             }
 
             // check if windGust data is available
@@ -104,10 +107,11 @@ class windspeeddirectionView extends WatchUi.DataField {
         }
 
         // show relativeWindDirection as arrow
-        var arrow1 = pointOnCircle(Math.toRadians(relativeWindDirection + 90), width, height);
-        var arrow2 = pointOnCircle(Math.toRadians((relativeWindDirection + 90) - 145), width, height);
-        var arrow3 = pointOnCircle(Math.toRadians((relativeWindDirection + 90) + 145), width, height);
-        dc.fillPolygon([arrow1, arrow2, arrow3]);
+        var arrow1 = pointOnCircle(Math.toRadians(relativeWindDirection), 0, width, height);
+        var arrow2 = pointOnCircle(Math.toRadians((relativeWindDirection) - 145), 0, width, height);
+        var arrow3 = pointOnCircle(Math.toRadians(relativeWindDirection + 180), 0.45, width, height);
+        var arrow4 = pointOnCircle(Math.toRadians((relativeWindDirection) + 145), 0, width, height);
+        dc.fillPolygon([arrow1, arrow2, arrow3, arrow4]);
         
         // wind speed and wind gust (if available), in mph
         dc.drawText(width - 35, (height / 2) + 5, Graphics.FONT_MEDIUM, windSpeedDisplay, textCenter);

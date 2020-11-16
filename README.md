@@ -1,5 +1,5 @@
 # garmin-wind-speed-direction
-ConnectIQ Datafield for Garmin Edge 530, shows wind direction and speed
+ConnectIQ Datafield for Garmin Edge, shows wind direction and speed
 
 Uses the OpenWeather API found here: https://openweathermap.org/api
 

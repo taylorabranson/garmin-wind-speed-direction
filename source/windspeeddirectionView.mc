@@ -26,6 +26,8 @@ class windspeeddirectionView extends WatchUi.DataField {
     // width and height of datafield dimensions
     function pointOnCircle(degree, radiusOffset, width, height) {
         var radius;
+        var radians = Math.toRadians(degree + 90);
+        
         // determine radius based on datafield dimension
         if ((width / 2) < height) {
             radius = (width / 4) - 5;
@@ -41,8 +43,11 @@ class windspeeddirectionView extends WatchUi.DataField {
         // center vertically in view
         var yOffset = (height / 2);
 
-        var x = (radius * (Math.cos(degree))) + xOffset;
-        var y = (radius * (Math.sin(degree))) + yOffset;
+        // calculate a point along a circle with 3 o'clock as the starting
+        // point of the arc
+        var x = (radius * (Math.cos(radians))) + xOffset;
+        var y = (radius * (Math.sin(radians))) + yOffset;
+
         return [x,y];
     }
 
@@ -78,23 +83,10 @@ class windspeeddirectionView extends WatchUi.DataField {
             // South is PI (180 deg)
             
             // convert heading from radians to degrees
-            // uses gps to provide direction of travel when moving, and the
-            // compass when not moving
             heading = Math.toDegrees(positionInfo.heading);
 
-            // converts negative degrees to fit w/in 360 systen
-            // directions from N to S, counterclockwise
-            if (positionInfo.heading < 0) { 
-                heading = 360 + heading;
-            }
-
             // calculate relativeWindDirection in degrees
-            // refers to direction wind originates in relation to heading
-            if (heading > windDirection) {
-                relativeWindDirection = 360 + (windDirection) - heading + 90;
-            } else if (heading <= windDirection) {
-                relativeWindDirection = (windDirection) - heading + 90;
-            }
+            relativeWindDirection = (windDirection) - heading;
 
             // check if windGust data is available
             if (windGust != 0 && windGust != windSpeed) {
@@ -107,10 +99,10 @@ class windspeeddirectionView extends WatchUi.DataField {
         }
 
         // show relativeWindDirection as arrow
-        var arrow1 = pointOnCircle(Math.toRadians(relativeWindDirection), 0, width, height);
-        var arrow2 = pointOnCircle(Math.toRadians((relativeWindDirection) - 145), 0, width, height);
-        var arrow3 = pointOnCircle(Math.toRadians(relativeWindDirection + 180), 0.45, width, height);
-        var arrow4 = pointOnCircle(Math.toRadians((relativeWindDirection) + 145), 0, width, height);
+        var arrow1 = pointOnCircle(relativeWindDirection, 0, width, height);
+        var arrow2 = pointOnCircle((relativeWindDirection - 145), 0, width, height);
+        var arrow3 = pointOnCircle((relativeWindDirection + 180), 0.45, width, height);
+        var arrow4 = pointOnCircle((relativeWindDirection + 145), 0, width, height);
         dc.fillPolygon([arrow1, arrow2, arrow3, arrow4]);
         
         // wind speed and wind gust (if available), in mph

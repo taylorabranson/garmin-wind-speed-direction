@@ -8,6 +8,7 @@ using Toybox.WatchUi as Ui;
 var windSpeed = 0;
 var windGust = 0;
 var windDirection = 0;
+var lastUpdated = null;
 
 (:background)
 class windspeeddirectionApp extends Application.AppBase {
@@ -53,6 +54,7 @@ class windspeeddirectionApp extends Application.AppBase {
                 windGust = 0;
             }
 
+            lastUpdated = Time.now();
         } else {
             System.println("App - No Data from BG");
         }

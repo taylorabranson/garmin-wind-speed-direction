@@ -106,9 +106,8 @@ class windspeeddirectionView extends WatchUi.DataField {
         dc.fillPolygon([arrow1, arrow2, arrow3, arrow4]);
         
         // wind speed and wind gust (if available), in mph
-        dc.drawText(width - 35, (height / 2) + 5, Graphics.FONT_MEDIUM, windSpeedDisplay, textCenter);
+        dc.drawText(width - 35, (height / 2) + 1, Graphics.FONT_MEDIUM, windSpeedDisplay, textCenter);
 
-        // TODO: show info on wind data; ie, no data, x minutes old, etc.
         if (lastUpdated == null) {
             dc.drawText(width - 35, (height / 2) + 22, Graphics.FONT_TINY, "NO DATA", textCenter);
         }

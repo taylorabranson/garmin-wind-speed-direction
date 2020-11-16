@@ -27,7 +27,7 @@ class windspeeddirectionView extends WatchUi.DataField {
     function pointOnCircle(degree, radiusOffset, width, height) {
         var radius;
         var radians = Math.toRadians(degree + 90);
-        
+
         // determine radius based on datafield dimension
         if ((width / 2) < height) {
             radius = (width / 4) - 5;
@@ -107,6 +107,11 @@ class windspeeddirectionView extends WatchUi.DataField {
         
         // wind speed and wind gust (if available), in mph
         dc.drawText(width - 35, (height / 2) + 5, Graphics.FONT_MEDIUM, windSpeedDisplay, textCenter);
+
+        // TODO: show info on wind data; ie, no data, x minutes old, etc.
+        if (lastUpdated == null) {
+            dc.drawText(width - 35, (height / 2) + 22, Graphics.FONT_TINY, "NO DATA", textCenter);
+        }
     }
 
 }

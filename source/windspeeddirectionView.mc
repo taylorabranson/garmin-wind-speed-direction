@@ -2,6 +2,7 @@ using Toybox.WatchUi;
 using Toybox.Graphics;
 using Toybox.Position;
 using Toybox.Application;
+using Toybox.Time;
 using Toybox.Math;
 
 
@@ -110,6 +111,11 @@ class windspeeddirectionView extends WatchUi.DataField {
 
         if (lastUpdated == null) {
             dc.drawText(width - 35, (height / 2) + 22, Graphics.FONT_TINY, "NO DATA", textCenter);
+        } else {
+            var lastUpdatedDisplay = lastUpdated.subtract(Time.now());
+            if ((lastUpdatedDisplay.value() / 60) >= 1) {
+                dc.drawText(width - 35, (height / 2) + 22, Graphics.FONT_TINY, (lastUpdatedDisplay.value() / 60), textCenter);
+            }
         }
     }
 

@@ -109,11 +109,14 @@ class windspeeddirectionView extends WatchUi.DataField {
         // wind speed and wind gust (if available), in mph
         dc.drawText(width - 35, (height / 2) + 1, Graphics.FONT_MEDIUM, windSpeedDisplay, textCenter);
 
+        // data info
         if (lastUpdated == null) {
+            // no data message
             dc.drawText(width - 35, (height / 2) + 22, Graphics.FONT_TINY, "NO DATA", textCenter);
         } else {
             var lastUpdatedDisplay = lastUpdated.subtract(Time.now());
-            if ((lastUpdatedDisplay.value() / 60) >= 1) {
+            // show message if data is more than 15 minutes old
+            if ((lastUpdatedDisplay.value() / 60) >= 15) {
                 dc.drawText(width - 35, (height / 2) + 22, Graphics.FONT_TINY, (lastUpdatedDisplay.value() / 60), textCenter);
             }
         }

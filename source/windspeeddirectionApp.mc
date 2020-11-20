@@ -33,7 +33,7 @@ class windspeeddirectionApp extends Application.AppBase {
         System.println("App - Get Initial View");
         if(Toybox.System has :ServiceDelegate) {
             // starts Temporal Event
-            Background.registerForTemporalEvent(new Time.Duration((5 * 60) + 1));
+            Background.registerForTemporalEvent(new Time.Duration(5 * 60));
             System.println("App - registerTemporalEvent");
         }
         return [ new windspeeddirectionView() ];

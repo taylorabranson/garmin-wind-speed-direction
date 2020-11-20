@@ -54,7 +54,7 @@ class windspeeddirectionApp extends Application.AppBase {
                 windGust = 0;
             }
 
-            lastUpdated = Time.now();
+            lastUpdated = new Time.Moment(data["current"]["dt"]);
         } else {
             System.println("App - No Data from BG");
         }

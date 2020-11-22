@@ -87,13 +87,13 @@ class windspeeddirectionView extends WatchUi.DataField {
             heading = Math.toDegrees(positionInfo.heading);
 
             // calculate relativeWindDirection in degrees
-            relativeWindDirection = (windDirection) - heading;
+            relativeWindDirection = ($.windDirection) - heading;
 
-            // check if windGust data is available
-            if (windGust != 0 && windGust != windSpeed) {
-                windSpeedDisplay = windSpeed.format("%d") + "(" + windGust.format("%d") + ")";
+            // check if $.windGust data is available
+            if ($.windGust != 0 && $.windGust != $.windSpeed) {
+                windSpeedDisplay = $.windSpeed.format("%d") + "(" + $.windGust.format("%d") + ")";
             } else {
-                windSpeedDisplay = windSpeed.format("%d");
+                windSpeedDisplay = $.windSpeed.format("%d");
             }
         } else {
             return;
@@ -110,11 +110,11 @@ class windspeeddirectionView extends WatchUi.DataField {
         dc.drawText(width - 35, (height / 2) + 1, Graphics.FONT_MEDIUM, windSpeedDisplay, textCenter);
 
         // data info
-        if (lastUpdated == null) {
+        if ($.lastUpdated == null) {
             // no data message
             dc.drawText(width - 35, (height / 2) + 22, Graphics.FONT_TINY, "NO DATA", textCenter);
         } else {
-            var lastUpdatedDisplay = lastUpdated.subtract(Time.now());
+            var lastUpdatedDisplay = $.lastUpdated.subtract(Time.now());
             // show message if data is more than 15 minutes old
             if ((lastUpdatedDisplay.value() / 60) >= 15) {
                 dc.drawText(width - 35, (height / 2) + 22, Graphics.FONT_TINY, (lastUpdatedDisplay.value() / 60), textCenter);

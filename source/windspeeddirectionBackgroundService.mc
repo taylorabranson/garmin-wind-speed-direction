@@ -60,7 +60,7 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
                 "exclude" => "minutely,hourly,daily,alerts",
                 "units" => "imperial",
                 // api-key stored in resources.xml
-                "appid" => Application.loadResource(Rez.Strings.apikey)
+                "appid" => Application.loadResource(Rez.Strings.apikeyOpenWeather)
             };
 
             // JSON

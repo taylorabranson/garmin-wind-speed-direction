@@ -13,11 +13,24 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
 
     function onTemporalEvent() {
         System.println("Background - onTemporalEvent");
+        
+        // TODO: implement additional api request options: ClimaCell, YahooWeather
+
+        // TODO: pass API request options as arguments on makeRequest()
+        
+        // TODO: implement ToyBox.Weather call if available, ConnectIQ 3.2 Required
+        // Edge 530 requires Firmware 7 for CIQ 3.2 support
+
         makeRequest();
     }
 
     // runs when makeWebRequest receives data
     function onReceive(responseCode, data) {
+
+        // TODO: wind data processing here
+
+        // TODO: process data based on source
+
         System.println("Background - onReceive");
         // check response and data
         if (responseCode == 200 && data != null) {
@@ -31,6 +44,8 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
     // get weather data
     function makeRequest() {
         System.println("Background - makeRequest");
+
+        // TODO: implement function parameters for url, params, options, responseCallBack
 
         // location from gps
         var positionInfo = Position.getInfo().position.toDegrees();

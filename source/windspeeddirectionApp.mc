@@ -13,6 +13,9 @@ var lastUpdated = null;
 (:background)
 class windspeeddirectionApp extends Application.AppBase {
 
+    // TODO: implement settings from Garmin app for:
+    // weather data source, update frequency, etc.
+
     function initialize() {
         System.println("App - Initialize");
         AppBase.initialize();
@@ -41,6 +44,7 @@ class windspeeddirectionApp extends Application.AppBase {
 
     // receives data from background process
     function onBackgroundData(data) {
+        // TODO: change data handling in line with upcoming background service changes
         System.println("App - OnBackgroundData");
         if (data != null) {
             System.println("App - Good data from BG");

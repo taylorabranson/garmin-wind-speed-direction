@@ -47,10 +47,15 @@ class windspeeddirectionApp extends Application.AppBase {
 
             // process weather data
             windSpeed = data["current"]["wind_speed"];
+            if (windSpeed == null) {
+                windSpeed = 0;
+            }
             windDirection = data["current"]["wind_deg"];
-            if (data["current"]["wind_gust"] != null) {
-                windGust = data["current"]["wind_gust"];
-            } else {
+            if (windDirection == null) {
+                windDirection = 0;
+            }
+            windGust = data["current"]["wind_gust"];
+            if (windGust == null) {
                 windGust = 0;
             }
 

@@ -13,15 +13,39 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
 
     function onTemporalEvent() {
         System.println("Background - onTemporalEvent");
+        var url = null;
+        var params = null;
         
         // TODO: implement additional api request options: ClimaCell, YahooWeather
-
-        // TODO: pass API request options as arguments on makeRequest()
         
         // TODO: implement ToyBox.Weather call if available, ConnectIQ 3.2 Required
         // Edge 530 requires Firmware 7 for CIQ 3.2 support
 
-        makeRequest();
+        // location from gps
+        var positionInfo = Position.getInfo().position.toDegrees();
+
+        // OpenWeather
+        if (positionInfo != null ) {
+            // add check for api choice in settings
+            if (true) {
+                url = "https://api.openweathermap.org/data/2.5/onecall";
+
+                params = {
+                    // API DOC: https://openweathermap.org/api/one-call-api
+                    "lat" => positionInfo[0],
+                    "lon" => positionInfo[1],
+                    "exclude" => "minutely,hourly,daily,alerts",
+                    "units" => "imperial",
+                    // api-key stored in resources.xml
+                    "appid" => Application.loadResource(Rez.Strings.apikeyOpenWeather)
+                };    
+            }
+        }
+
+        if (url != null && params != null) {
+            makeRequest(url, params);
+        }
+
     }
 
     // runs when makeWebRequest receives data
@@ -42,42 +66,21 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
     }
 
     // get weather data
-    function makeRequest() {
+    function makeRequest(url, params) {
         System.println("Background - makeRequest");
 
-        // TODO: implement function parameters for url, params, options, responseCallBack
+        // JSON
+        var options = {
+            :method => Communications.HTTP_REQUEST_METHOD_GET,
+            :headers => {
+                "Content-Type" => Communications.REQUEST_CONTENT_TYPE_JSON},
+            :responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_JSON	
+        };
 
-        // location from gps
-        var positionInfo = Position.getInfo().position.toDegrees();
+        // call this method when response is received
+        var responseCallBack = method(:onReceive);
 
-        if (positionInfo != null) {
-            var url = "https://api.openweathermap.org/data/2.5/onecall";
-
-            var params = {
-                // API DOC: https://openweathermap.org/api/one-call-api
-                "lat" => positionInfo[0],
-                "lon" => positionInfo[1],
-                "exclude" => "minutely,hourly,daily,alerts",
-                "units" => "imperial",
-                // api-key stored in resources.xml
-                "appid" => Application.loadResource(Rez.Strings.apikeyOpenWeather)
-            };
-
-            // JSON
-            var options = {
-                :method => Communications.HTTP_REQUEST_METHOD_GET,
-                :headers => {
-                    "Content-Type" => Communications.REQUEST_CONTENT_TYPE_JSON},
-                :responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_JSON	
-            };
-
-            // call this method when response is received
-            var responseCallBack = method(:onReceive);
-
-            Communications.makeWebRequest(url, params, options, responseCallBack);
-        } else {
-            return;
-        }
+        Communications.makeWebRequest(url, params, options, responseCallBack);
 
     }
 }

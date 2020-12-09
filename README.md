@@ -10,3 +10,5 @@ Create an account for one or more weather API:
 
 Then enter the API key(s) in settings on Garmin Connect. (API keys sometimes take a few hours before they become active)
 
+### Planned Features
+

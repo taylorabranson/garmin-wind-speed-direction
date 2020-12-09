@@ -2,7 +2,7 @@ using Toybox.Application;
 using Toybox.Background;
 using Toybox.System;
 using Toybox.Time;
-using Toybox.WatchUi as Ui;
+using Toybox.WatchUi;
 
 // wind data for view
 var windSpeed = 0;
@@ -67,7 +67,7 @@ class windspeeddirectionApp extends Application.AppBase {
         } else {
             System.println("App - No Data from BG");
         }
-        Ui.requestUpdate();
+        WatchUi.requestUpdate();
     }
 
     // starts background service

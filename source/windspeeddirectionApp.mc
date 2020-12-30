@@ -31,10 +31,13 @@ class windspeeddirectionApp extends Application.AppBase {
         System.println("App - Stopping");
     }
 
-    //! Return the initial view of your application here
+    // Return the initial view of your application here
     function getInitialView() {
         System.println("App - Get Initial View");
-        Storage.setValue("apikey", Application.loadResource(Rez.Strings.apikeyOpenWeather));
+
+        // TODO: read apikey from user settings
+        Storage.setValue("apikeyOpenWeather", Application.loadResource(Rez.Strings.apikeyOpenWeather));
+        Storage.setValue("apikeyClimaCell", Application.loadResource(Rez.Strings.apikeyClimaCell));
 
         if(Toybox.System has :ServiceDelegate) {
             // starts Temporal Event
@@ -49,7 +52,6 @@ class windspeeddirectionApp extends Application.AppBase {
 
     // receives data from background process
     function onBackgroundData(data) {
-        // TODO: change data handling in line with upcoming background service changes
         System.println("App - OnBackgroundData");
         if (!data.equals(-1)) {
             System.println("App - Good data from BG");

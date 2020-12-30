@@ -40,6 +40,9 @@ class windspeeddirectionApp extends Application.AppBase {
             // starts Temporal Event
             Background.registerForTemporalEvent(new Time.Duration(5 * 60));
             System.println("App - registerTemporalEvent");
+        } else {
+            System.println("Device doesn't support background service");
+            System.exit();
         }
         return [ new windspeeddirectionView() ];
     }
@@ -52,20 +55,20 @@ class windspeeddirectionApp extends Application.AppBase {
             System.println("App - Good data from BG");
 
             // process weather data
-            $.windSpeed = data.get("current").get("wind_speed");
+            $.windSpeed = data["wind_speed"];
             if ($.windSpeed == null) {
                 $.windSpeed = 0;
             }
-            $.windDirection = data["current"]["wind_deg"];
+            $.windDirection = data["wind_deg"];
             if ($.windDirection == null) {
                 $.windDirection = 0;
             }
-            $.windGust = data["current"]["wind_gust"];
+            $.windGust = data["wind_gust"];
             if ($.windGust == null) {
                 $.windGust = 0;
             }
 
-            $.lastUpdated = new Time.Moment(data["current"]["dt"]);
+            $.lastUpdated = new Time.Moment(data["current_time"]);
         } else {
             System.println("App - No Data from BG");
         }

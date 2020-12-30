@@ -1,3 +1,4 @@
+using Toybox.Application.Storage;
 using Toybox.Background;
 using Toybox.Communications;
 using Toybox.System;
@@ -17,19 +18,27 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
         var params = null;
         
         // TODO: implement additional api request options: ClimaCell, YahooWeather
+        var apiKey = Storage.getValue("apikey");
+
+        System.println(apiKey);
+        Test.assert(apiKey != null);
         
         // TODO: implement ToyBox.Weather call if available, ConnectIQ 3.2 Required
         // Edge 530 requires Firmware 7 for CIQ 3.2 support
 
         // location from gps
         var positionInfo = Position.getInfo().position.toDegrees();
-
+        System.println(positionInfo);
+        
         // OpenWeather
         if (positionInfo != null ) {
-            // add check for api choice in settings
+            System.println("Background - onTemporalEvent - posNotNull");
+
+            // TODO: add check for api choice in settings
             if (true) {
                 url = "https://api.openweathermap.org/data/2.5/onecall";
-
+                System.println("Background - onTemporalEvent - posNotNull - urlSet");
+                
                 params = {
                     // API DOC: https://openweathermap.org/api/one-call-api
                     "lat" => positionInfo[0],
@@ -37,12 +46,16 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
                     "exclude" => "minutely,hourly,daily,alerts",
                     "units" => "imperial",
                     // api-key stored in resources.xml
-                    "appid" => Application.loadResource(Rez.Strings.apikeyOpenWeather)
-                };    
+                    "appid" => apiKey
+                };
+                System.println("Background - onTemporalEvent - posNotNull - paramsSet");
             }
+            System.println("Background - onTemporalEvent - posNotNull - makeRequest");
+            makeRequest(url, params);
         }
 
         if (url != null && params != null) {
+            System.println("Background - onTemporalEvent - makeRequest");
             makeRequest(url, params);
         }
 
@@ -56,11 +69,14 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
         // TODO: process data based on source
 
         System.println("Background - onReceive");
+        System.println(responseCode);
         // check response and data
-        if (responseCode == 200 && data != null) {
+        if (data != null) {
+            System.println("Background - onReceive - dataNotNull");
             Background.exit(data);
         } else {
-            Background.exit(null);
+            System.println("Background - onReceive - dataNull");
+            Background.exit(-1);
         }
 
     }
@@ -76,11 +92,12 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
                 "Content-Type" => Communications.REQUEST_CONTENT_TYPE_JSON},
             :responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_JSON	
         };
+        System.println("Background - makeRequest - optionsSet");
 
         // call this method when response is received
         var responseCallBack = method(:onReceive);
+        System.println("Background - makeRequest - callbackSet");
 
         Communications.makeWebRequest(url, params, options, responseCallBack);
-
     }
 }

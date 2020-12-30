@@ -10,7 +10,7 @@ var windGust = 0;
 var windDirection = 0;
 var lastUpdated = null;
 
-(:background)
+(:background)   
 class windspeeddirectionApp extends Application.AppBase {
 
     // TODO: implement settings from Garmin app for:
@@ -34,6 +34,8 @@ class windspeeddirectionApp extends Application.AppBase {
     //! Return the initial view of your application here
     function getInitialView() {
         System.println("App - Get Initial View");
+        Storage.setValue("apikey", Application.loadResource(Rez.Strings.apikeyOpenWeather));
+
         if(Toybox.System has :ServiceDelegate) {
             // starts Temporal Event
             Background.registerForTemporalEvent(new Time.Duration(5 * 60));
@@ -46,11 +48,11 @@ class windspeeddirectionApp extends Application.AppBase {
     function onBackgroundData(data) {
         // TODO: change data handling in line with upcoming background service changes
         System.println("App - OnBackgroundData");
-        if (data != null) {
+        if (!data.equals(-1)) {
             System.println("App - Good data from BG");
 
             // process weather data
-            $.windSpeed = data["current"]["wind_speed"];
+            $.windSpeed = data.get("current").get("wind_speed");
             if ($.windSpeed == null) {
                 $.windSpeed = 0;
             }

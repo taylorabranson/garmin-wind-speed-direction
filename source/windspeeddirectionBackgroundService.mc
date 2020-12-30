@@ -16,8 +16,8 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
         var positionInfo = Position.getInfo().position.toDegrees();
 
         // TODO: makeWebRequest based on user setting
-        // makeRequestClimaCell(positionInfo);
-        makeRequestOpenWeather(positionInfo);
+        makeRequestClimaCell(positionInfo);
+        // makeRequestOpenWeather(positionInfo);
     }
 
     // runs when makeWebRequest receives data
@@ -28,9 +28,8 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
         if (responseCode == 200 && responseData != null) {
             var data = {
                 "wind_speed" => responseData["current"]["wind_speed"],
-                "wind_deg" => responseData["current"]["wind_deg"],
                 "wind_gust" => responseData["current"]["wind_gust"],
-                "current_time" => responseData["current"]["dt"]
+                "wind_deg" => responseData["current"]["wind_deg"]
             };
             Background.exit(data);
         } else {
@@ -56,10 +55,9 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
             var apiKey = Storage.getValue("apikeyOpenWeather");
 
             System.println(apiKey);
-            Test.assert(apiKey != null);
                 
             url = "https://api.openweathermap.org/data/2.5/onecall";
-            
+            System.println("url");
             params = {
                 // API DOC: https://openweathermap.org/api/one-call-api
                 "lat" => positionInfo[0],
@@ -68,6 +66,7 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
                 "units" => "imperial",
                 "appid" => apiKey
             };
+            System.println("params");
 
             Communications.makeWebRequest(url, params, options, responseCallBack);
         } else {
@@ -90,7 +89,6 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
         var apiKey = Storage.getValue("apikeyClimaCell");
 
         System.println(apiKey);
-        Test.assert(apiKey != null);
 
         url = "https://data.climacell.co/v4/timelines";
 
@@ -111,14 +109,11 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
         System.println(responseCode);
 
         if (responseCode == 200 && responseData != null) {
-            // var currentWeather = responseData["data"]["timelines"][0]["intervals"][0];
+            var currentWeather = responseData["data"]["timelines"][0]["intervals"][0]["values"];
             var data = {
-                "wind_speed" => responseData["data"]["timelines"][0]["intervals"][0]["values"]["windSpeed"]
-                // "wind_speed" => currentWeather["values"]["windSpeed"]
-                // ,
-                // "wind_deg" => responseData["current"]["wind_deg"],
-                // "wind_gust" => responseData["current"]["wind_gust"],
-                // "current_time" => responseData["current"]["dt"]
+                "wind_speed" => currentWeather["windSpeed"] * 2.236936,
+                "wind_gust" => currentWeather["windGust"] * 2.236936,
+                "wind_deg" => currentWeather["windDirection"]
             };
             Background.exit(data);
         } else {

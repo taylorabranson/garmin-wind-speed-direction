@@ -61,16 +61,16 @@ class windspeeddirectionApp extends Application.AppBase {
             if ($.windSpeed == null) {
                 $.windSpeed = 0;
             }
-            $.windDirection = data["wind_deg"];
-            if ($.windDirection == null) {
-                $.windDirection = 0;
-            }
             $.windGust = data["wind_gust"];
             if ($.windGust == null) {
                 $.windGust = 0;
             }
+            $.windDirection = data["wind_deg"];
+            if ($.windDirection == null) {
+                $.windDirection = 0;
+            }
 
-            $.lastUpdated = new Time.Moment(data["current_time"]);
+            $.lastUpdated = new Time.Moment(Time.now().value());
         } else {
             System.println("App - No Data from BG");
         }

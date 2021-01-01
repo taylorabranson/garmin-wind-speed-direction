@@ -24,11 +24,11 @@ class windspeeddirectionApp extends Application.AppBase {
             Storage.setValue("climaCellAPI", Application.loadResource(Rez.Strings.apikeyClimaCell));
             // TODO: read apikey from user settings
             // Storage.setValue("dataSource", Application.loadResource(Rez.Properties.windDataSource));
-            System.println("App - Settings put in Object Store");
+            System.println("App - Settings added to Object Store");
+        } catch (exception instanceof ObjectStoreAccessException) {
+            System.println("BG isn't allowed to modify object store");
         } catch (exception) {
-            if (!exception.getErrorMessage().equals("Background processes cannot modify the object store")) {
                 exception.printStackTrace();
-            }
         }
     }
 

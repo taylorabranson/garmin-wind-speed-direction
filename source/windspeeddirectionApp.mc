@@ -35,9 +35,11 @@ class windspeeddirectionApp extends Application.AppBase {
     function getInitialView() {
         System.println("App - Get Initial View");
 
-        // TODO: read apikey from user settings
         Storage.setValue("apikeyOpenWeather", Application.loadResource(Rez.Strings.apikeyOpenWeather));
         Storage.setValue("apikeyClimaCell", Application.loadResource(Rez.Strings.apikeyClimaCell));
+
+        // TODO: read apikey from user settings
+        // Storage.setProperty("apiSource", Application.loadResource(Rez.Properties.windDataSource));
 
         if(Toybox.System has :ServiceDelegate) {
             // starts Temporal Event

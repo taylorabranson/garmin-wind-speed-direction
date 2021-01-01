@@ -28,9 +28,6 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
         if (positionInfo != null ) {
             var url = null;
             var params = null;
-            var responseCallBack = null;
-            var apiKey = null;
-
             var options = {
                 :method => Communications.HTTP_REQUEST_METHOD_GET,
                 :headers => {
@@ -38,6 +35,9 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
                     },
                 :responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_JSON	
             };
+            var responseCallBack = null;
+
+            var apiKey = null;
 
             if (dataSource.equals("openWeather")) {
                 apiKey = Storage.getValue("apikeyOpenWeather");

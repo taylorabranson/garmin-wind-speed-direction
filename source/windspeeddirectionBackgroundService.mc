@@ -15,8 +15,8 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
     function onTemporalEvent() {
         // TODO: makeWebRequest based on user setting
         
-        // var source = Storage.getProperty(apiSource);
-        // System.println(source);
+        // var dataSource = Storage.getProperty(dataSource);
+        // System.println(dataSource);
         
         requestWeatherData("climaCellAPI");
         // requestWeatherData("openWeatherAPI");

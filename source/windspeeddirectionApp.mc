@@ -17,26 +17,26 @@ class windspeeddirectionApp extends Application.AppBase {
     // weather data source, update frequency, etc.
 
     function initialize() {
-        System.println("App - Initialize");
+        // System.println("App - Initialize");
         AppBase.initialize();
     }
 
     // onStart() is called on application start up
     function onStart(state) {
-        System.println("App - Start Up");
+        // System.println("App - Start Up");
     }
 
     // onStop() is called when your application is exiting
     function onStop(state) {
-        System.println("App - Stopping");
+        // System.println("App - Stopping");
     }
 
     // Return the initial view of your application here
     function getInitialView() {
-        System.println("App - Get Initial View");
+        // System.println("App - Get Initial View");
 
-        Storage.setValue("apikeyOpenWeather", Application.loadResource(Rez.Strings.apikeyOpenWeather));
-        Storage.setValue("apikeyClimaCell", Application.loadResource(Rez.Strings.apikeyClimaCell));
+        Storage.setValue("openWeatherAPI", Application.loadResource(Rez.Strings.apikeyOpenWeather));
+        Storage.setValue("climaCellAPI", Application.loadResource(Rez.Strings.apikeyClimaCell));
 
         // TODO: read apikey from user settings
         // Storage.setProperty("apiSource", Application.loadResource(Rez.Properties.windDataSource));
@@ -44,7 +44,7 @@ class windspeeddirectionApp extends Application.AppBase {
         if(Toybox.System has :ServiceDelegate) {
             // starts Temporal Event
             Background.registerForTemporalEvent(new Time.Duration(5 * 60));
-            System.println("App - registerTemporalEvent");
+            // System.println("App - registerTemporalEvent");
         } else {
             System.println("Device doesn't support background service");
             System.exit();

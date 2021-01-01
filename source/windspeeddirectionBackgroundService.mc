@@ -18,14 +18,15 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
         // var source = Storage.getProperty(apiSource);
         // System.println(source);
         
-        // requestWeatherData("climaCell");
-        requestWeatherData("openWeather");
+        requestWeatherData("climaCellAPI");
+        // requestWeatherData("openWeatherAPI");
     }
 
     function requestWeatherData(dataSource) {
         var positionInfo = Position.getInfo().position.toDegrees();
+        var apiKey = Storage.getValue(dataSource);
 
-        if (positionInfo != null ) {
+        if (positionInfo != null && apiKey != null) {
             var url = null;
             var params = null;
             var options = {
@@ -37,10 +38,7 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
             };
             var responseCallBack = null;
 
-            var apiKey = null;
-
-            if (dataSource.equals("openWeather")) {
-                apiKey = Storage.getValue("apikeyOpenWeather");
+            if (dataSource.equals("openWeatherAPI")) {
                 url = "https://api.openweathermap.org/data/2.5/onecall";
                 params = {
                     // API DOC: https://openweathermap.org/api/one-call-api
@@ -51,8 +49,7 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
                     "appid" => apiKey
                 };
                 responseCallBack = method(:onReceiveOpenWeatherResponse);
-            } else if (dataSource.equals("climaCell")) {
-                apiKey = Storage.getValue("apikeyClimaCell");
+            } else if (dataSource.equals("climaCellAPI")) {
                 url = "https://data.climacell.co/v4/timelines";
                 params = {
                     // API DOC: https://docs.climacell.co/reference/api-overview
@@ -64,6 +61,7 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
                 };
                 responseCallBack = method(:onReceiveClimaCellResponse);
             } else {
+                System.println("Not a valid data source");
                 Background.exit(-1);
             }
 
@@ -74,7 +72,6 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
         }
     }
 
-    // runs when makeWebRequest receives data
     function onReceiveOpenWeatherResponse(responseCode, responseData) {
         System.println("Background - onReceive");
         System.println(responseCode);
@@ -111,5 +108,4 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
         }
     }
 
-    
 }

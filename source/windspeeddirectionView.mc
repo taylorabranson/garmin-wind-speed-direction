@@ -1,7 +1,6 @@
 using Toybox.WatchUi;
 using Toybox.Graphics;
 using Toybox.Position;
-using Toybox.Application;
 using Toybox.Time;
 using Toybox.Math;
 

@@ -9,24 +9,20 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
 
     function initialize() {
         System.ServiceDelegate.initialize();
-        System.println("Background - Initialize");
+        // System.println("BG - Initialize");
     }
 
     function onTemporalEvent() {
-        // TODO: makeWebRequest based on user setting
-        
-        // var dataSource = Storage.getProperty(dataSource);
-        // System.println(dataSource);
-        
-        requestWeatherData("climaCellAPI");
-        // requestWeatherData("openWeatherAPI");
+        requestWeatherData();
     }
 
-    function requestWeatherData(dataSource) {
+    function requestWeatherData() {
+        var dataSource = Storage.getValue("dataSource");
+        System.println("BG - " + dataSource);
         var positionInfo = Position.getInfo().position.toDegrees();
         var apiKey = Storage.getValue(dataSource);
 
-        if (positionInfo != null && apiKey != null) {
+        if (positionInfo != null && apiKey != null && dataSource != null) {
             var url = null;
             var params = null;
             var options = {
@@ -61,7 +57,7 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
                 };
                 responseCallBack = method(:onReceiveClimaCellResponse);
             } else {
-                System.println("Not a valid data source");
+                System.println("BG - Not a valid data source");
                 Background.exit(-1);
             }
 
@@ -73,10 +69,8 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
     }
 
     function onReceiveOpenWeatherResponse(responseCode, responseData) {
-        System.println("Background - onReceive");
-        System.println(responseCode);
-        
         if (responseCode == 200 && responseData != null) {
+            System.println("BG - onReceive - Response Code: " + responseCode);
             var data = {
                 "wind_speed" => responseData["current"]["wind_speed"],
                 "wind_gust" => responseData["current"]["wind_gust"],
@@ -84,17 +78,15 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
             };
             Background.exit(data);
         } else {
-            System.println("Background - onReceive - noData");
+            System.println("BG - onReceive - noData - Response Code: " + responseCode);
             Background.exit(-1);
         }
 
     }
 
     function onReceiveClimaCellResponse(responseCode, responseData) {
-        System.println("Background - onReceive");
-        System.println(responseCode);
-
         if (responseCode == 200 && responseData != null) {
+            System.println("BG - onReceive - Response Code: " + responseCode);
             var currentWeather = responseData["data"]["timelines"][0]["intervals"][0]["values"];
             var data = {
                 "wind_speed" => currentWeather["windSpeed"] * 2.236936,
@@ -103,7 +95,7 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
             };
             Background.exit(data);
         } else {
-            System.println("Background - onReceive - noData");
+            System.println("BG - onReceive - noData - Response Code: " + responseCode);
             Background.exit(-1);
         }
     }

@@ -19,14 +19,27 @@ class windspeeddirectionApp extends Application.AppBase {
     function initialize() {
         System.println("App - Initialize");
         AppBase.initialize();
+        loadUserSettings();
+    }
+
+    function loadUserSettings() {
+        System.println("App - Load User Settings");
         try {
             Storage.setValue("openWeatherAPI", Application.loadResource(Rez.Strings.apikeyOpenWeather));
             Storage.setValue("climaCellAPI", Application.loadResource(Rez.Strings.apikeyClimaCell));
+
+            var dataSource = Application.Properties.getValue("windDataSource");
+            var dataSourceOptions = {
+                1 => "openWeatherAPI",
+                2 => "climaCellAPI"
+            };
+            Storage.setValue("dataSource", dataSourceOptions[dataSource]);
+
             // TODO: read apikey from user settings
-            // Storage.setValue("dataSource", Application.loadResource(Rez.Properties.windDataSource));
+
             System.println("App - Settings added to Object Store");
         } catch (exception instanceof ObjectStoreAccessException) {
-            System.println("BG isn't allowed to modify object store");
+            System.println("BG - not allowed to modify object store");
         } catch (exception) {
                 exception.printStackTrace();
         }

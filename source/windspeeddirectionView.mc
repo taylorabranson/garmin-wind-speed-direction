@@ -13,7 +13,7 @@ class windspeeddirectionView extends WatchUi.DataField {
     var relativeWindDirection = 0;
 
     function initialize() {
-        System.println("View - Initialize");
+        // System.println("View - Initialize");
         DataField.initialize();
     }
 
@@ -55,7 +55,7 @@ class windspeeddirectionView extends WatchUi.DataField {
     // Display the value you computed here. This will be called
     // once a second when the data field is visible.
     function onUpdate(dc) {
-        System.println("View - Onupdate");
+        // System.println("View - Onupdate");
 
         var width = dc.getWidth();
         var height = dc.getHeight();

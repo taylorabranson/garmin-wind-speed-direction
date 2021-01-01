@@ -1,3 +1,4 @@
+using Toybox.Application.Storage;
 using Toybox.Background;
 using Toybox.Communications;
 using Toybox.System;
@@ -12,75 +13,99 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
     }
 
     function onTemporalEvent() {
-        System.println("Background - onTemporalEvent");
-        var url = null;
-        var params = null;
+        // TODO: makeWebRequest based on user setting
         
-        // TODO: implement additional api request options: ClimaCell, YahooWeather
+        // var dataSource = Storage.getProperty(dataSource);
+        // System.println(dataSource);
         
-        // TODO: implement ToyBox.Weather call if available, ConnectIQ 3.2 Required
-        // Edge 530 requires Firmware 7 for CIQ 3.2 support
+        requestWeatherData("climaCellAPI");
+        // requestWeatherData("openWeatherAPI");
+    }
 
-        // location from gps
+    function requestWeatherData(dataSource) {
         var positionInfo = Position.getInfo().position.toDegrees();
+        var apiKey = Storage.getValue(dataSource);
 
-        // OpenWeather
-        if (positionInfo != null ) {
-            // add check for api choice in settings
-            if (true) {
+        if (positionInfo != null && apiKey != null) {
+            var url = null;
+            var params = null;
+            var options = {
+                :method => Communications.HTTP_REQUEST_METHOD_GET,
+                :headers => {
+                    "Content-Type" => Communications.REQUEST_CONTENT_TYPE_JSON
+                    },
+                :responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_JSON	
+            };
+            var responseCallBack = null;
+
+            if (dataSource.equals("openWeatherAPI")) {
                 url = "https://api.openweathermap.org/data/2.5/onecall";
-
                 params = {
                     // API DOC: https://openweathermap.org/api/one-call-api
                     "lat" => positionInfo[0],
                     "lon" => positionInfo[1],
                     "exclude" => "minutely,hourly,daily,alerts",
                     "units" => "imperial",
-                    // api-key stored in resources.xml
-                    "appid" => Application.loadResource(Rez.Strings.apikeyOpenWeather)
-                };    
+                    "appid" => apiKey
+                };
+                responseCallBack = method(:onReceiveOpenWeatherResponse);
+            } else if (dataSource.equals("climaCellAPI")) {
+                url = "https://data.climacell.co/v4/timelines";
+                params = {
+                    // API DOC: https://docs.climacell.co/reference/api-overview
+                    "location" => positionInfo[0] + "," + positionInfo[1],
+                    "fields" => "windSpeed,windDirection,windGust",
+                    // TODO: update timestep to "current" when API is updated
+                    "timesteps" => "15m",
+                    "apikey" => apiKey
+                };
+                responseCallBack = method(:onReceiveClimaCellResponse);
+            } else {
+                System.println("Not a valid data source");
+                Background.exit(-1);
             }
-        }
 
-        if (url != null && params != null) {
-            makeRequest(url, params);
-        }
+            Communications.makeWebRequest(url, params, options, responseCallBack);
 
+        } else {
+            Background.exit(-1);
+        }
     }
 
-    // runs when makeWebRequest receives data
-    function onReceive(responseCode, data) {
-
-        // TODO: wind data processing here
-
-        // TODO: process data based on source
-
+    function onReceiveOpenWeatherResponse(responseCode, responseData) {
         System.println("Background - onReceive");
-        // check response and data
-        if (responseCode == 200 && data != null) {
+        System.println(responseCode);
+        
+        if (responseCode == 200 && responseData != null) {
+            var data = {
+                "wind_speed" => responseData["current"]["wind_speed"],
+                "wind_gust" => responseData["current"]["wind_gust"],
+                "wind_deg" => responseData["current"]["wind_deg"]
+            };
             Background.exit(data);
         } else {
-            Background.exit(null);
+            System.println("Background - onReceive - noData");
+            Background.exit(-1);
         }
 
     }
 
-    // get weather data
-    function makeRequest(url, params) {
-        System.println("Background - makeRequest");
+    function onReceiveClimaCellResponse(responseCode, responseData) {
+        System.println("Background - onReceive");
+        System.println(responseCode);
 
-        // JSON
-        var options = {
-            :method => Communications.HTTP_REQUEST_METHOD_GET,
-            :headers => {
-                "Content-Type" => Communications.REQUEST_CONTENT_TYPE_JSON},
-            :responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_JSON	
-        };
-
-        // call this method when response is received
-        var responseCallBack = method(:onReceive);
-
-        Communications.makeWebRequest(url, params, options, responseCallBack);
-
+        if (responseCode == 200 && responseData != null) {
+            var currentWeather = responseData["data"]["timelines"][0]["intervals"][0]["values"];
+            var data = {
+                "wind_speed" => currentWeather["windSpeed"] * 2.236936,
+                "wind_gust" => currentWeather["windGust"] * 2.236936,
+                "wind_deg" => currentWeather["windDirection"]
+            };
+            Background.exit(data);
+        } else {
+            System.println("Background - onReceive - noData");
+            Background.exit(-1);
+        }
     }
+
 }

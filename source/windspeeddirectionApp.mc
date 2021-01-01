@@ -4,13 +4,13 @@ using Toybox.System;
 using Toybox.Time;
 using Toybox.WatchUi;
 
-// wind data for view
+
 var windSpeed = 0;
 var windGust = 0;
 var windDirection = 0;
 var lastUpdated = null;
 
-(:background)
+(:background)   
 class windspeeddirectionApp extends Application.AppBase {
 
     // TODO: implement settings from Garmin app for:
@@ -19,58 +19,64 @@ class windspeeddirectionApp extends Application.AppBase {
     function initialize() {
         System.println("App - Initialize");
         AppBase.initialize();
+        try {
+            Storage.setValue("openWeatherAPI", Application.loadResource(Rez.Strings.apikeyOpenWeather));
+            Storage.setValue("climaCellAPI", Application.loadResource(Rez.Strings.apikeyClimaCell));
+            // TODO: read apikey from user settings
+            // Storage.setValue("dataSource", Application.loadResource(Rez.Properties.windDataSource));
+            System.println("App - Settings put in Object Store");
+        } catch (exception) {
+            if (!exception.getErrorMessage().equals("Background processes cannot modify the object store")) {
+                exception.printStackTrace();
+            }
+        }
     }
 
-    // onStart() is called on application start up
     function onStart(state) {
-        System.println("App - Start Up");
+        // System.println("App - Start Up");
     }
 
-    // onStop() is called when your application is exiting
     function onStop(state) {
-        System.println("App - Stopping");
+        // System.println("App - Stopping");
     }
 
-    //! Return the initial view of your application here
     function getInitialView() {
-        System.println("App - Get Initial View");
-        if(Toybox.System has :ServiceDelegate) {
-            // starts Temporal Event
+        // System.println("App - Get Initial View");
+        if (Toybox.System has :ServiceDelegate) {
             Background.registerForTemporalEvent(new Time.Duration(5 * 60));
-            System.println("App - registerTemporalEvent");
+            // System.println("App - registerTemporalEvent");
+        } else {
+            System.println("Device doesn't support background service");
+            System.exit();
         }
         return [ new windspeeddirectionView() ];
     }
 
-    // receives data from background process
     function onBackgroundData(data) {
-        // TODO: change data handling in line with upcoming background service changes
         System.println("App - OnBackgroundData");
-        if (data != null) {
+        if (!data.equals(-1)) {
             System.println("App - Good data from BG");
 
-            // process weather data
-            $.windSpeed = data["current"]["wind_speed"];
+            $.windSpeed = data["wind_speed"];
             if ($.windSpeed == null) {
                 $.windSpeed = 0;
             }
-            $.windDirection = data["current"]["wind_deg"];
-            if ($.windDirection == null) {
-                $.windDirection = 0;
-            }
-            $.windGust = data["current"]["wind_gust"];
+            $.windGust = data["wind_gust"];
             if ($.windGust == null) {
                 $.windGust = 0;
             }
+            $.windDirection = data["wind_deg"];
+            if ($.windDirection == null) {
+                $.windDirection = 0;
+            }
 
-            $.lastUpdated = new Time.Moment(data["current"]["dt"]);
+            $.lastUpdated = new Time.Moment(Time.now().value());
         } else {
             System.println("App - No Data from BG");
         }
         WatchUi.requestUpdate();
     }
 
-    // starts background service
     function getServiceDelegate(){
         return [new windSpeedServiceDelegate()];
     }

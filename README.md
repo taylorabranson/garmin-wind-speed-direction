@@ -22,7 +22,6 @@ Settings (in the Garmin Connect mobile app) are only available for apps download
 
   Garmin Connect Settings
   - User input api-key
-  - User selects weather api to use (OpenWeather, ClimaCell, YahooWeather)
   - User selects unit type for wind speed (m/s, mph, kph)
 
   Other

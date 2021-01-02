@@ -16,6 +16,8 @@ Create a build for your device using Garmin Connect IQ SDK.
 
 Side load application on device.
 
+Settings (in the Garmin Connect mobile app) are only available for apps downloaded from the Garmin Connect Store.
+
 ### Planned Features
 
   Garmin Connect Settings

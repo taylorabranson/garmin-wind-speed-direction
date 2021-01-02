@@ -1,0 +1,35 @@
+<resources>
+        <strings>
+                <string id="AppName">wind-direction</string>
+
+                <string id="apikeyOpenWeather" scope="background">API-KEY-HERE</string>
+                <string id="apikeyClimaCell" scope="background">API-KEY-HERE</string>
+                <string id="apikeyYahooWeather" scope="background">API-KEY-HERE</string>
+
+                <string id="windDataSourceTitle">API</string>
+                <string id="windDataSourcePrompt">Choose API for wind data:</string>
+                
+                <string id="openWeather">OpenWeather API Key</string>
+                <string id="climaCell">ClimaCell  API Key</string>
+                
+        </strings>
+
+
+        <properties>
+                <property id="windDataSource" type="number">1</property>
+                <property id="OpenWeatherKey" type="string">Open Weather API Key</property>
+                <property id="ClimaCellKey" type="string">ClimaCell API Key</property>
+        </properties>
+
+
+        <settings>
+                <setting propertyKey="@Properties.windDataSource"
+                         title="@Strings.windDataSourceTitle" 
+                         prompt="@Strings.windDataSourcePrompt">
+                        <settingConfig type="list">
+                                <listEntry value="1">@Strings.openWeather</listEntry>
+                                <listEntry value="2">@Strings.climaCell</listEntry>
+                        </settingConfig>
+                </setting>
+        </settings>
+</resources>

@@ -13,12 +13,13 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
     }
 
     function onTemporalEvent() {
+        System.println("BG - onTemporalEvent");
         requestWeatherData();
     }
 
     function requestWeatherData() {
+        System.println("BG - requestWeatherData");
         var dataSource = Storage.getValue("dataSource");
-        System.println("BG - " + dataSource);
         var positionInfo = Position.getInfo().position.toDegrees();
         var apiKey = Storage.getValue(dataSource);
 
@@ -33,8 +34,9 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
                 :responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_JSON	
             };
             var responseCallBack = null;
-
+            System.println("BG - requestWeatherData - Declared Variables");
             if (dataSource.equals("openWeatherAPI")) {
+                System.println("BG - " + dataSource);
                 url = "https://api.openweathermap.org/data/2.5/onecall";
                 params = {
                     // API DOC: https://openweathermap.org/api/one-call-api
@@ -46,13 +48,14 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
                 };
                 responseCallBack = method(:onReceiveOpenWeatherResponse);
             } else if (dataSource.equals("climaCellAPI")) {
+                System.println("BG - " + dataSource);
                 url = "https://data.climacell.co/v4/timelines";
                 params = {
                     // API DOC: https://docs.climacell.co/reference/api-overview
                     "location" => positionInfo[0] + "," + positionInfo[1],
                     "fields" => "windSpeed,windDirection,windGust",
                     // TODO: update timestep to "current" when API is updated
-                    "timesteps" => "15m",
+                    "timesteps" => "30m",
                     "apikey" => apiKey
                 };
                 responseCallBack = method(:onReceiveClimaCellResponse);
@@ -61,6 +64,7 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
                 Background.exit(-1);
             }
 
+            System.println("BG - requestWeatherData - makeWebRequest");
             Communications.makeWebRequest(url, params, options, responseCallBack);
 
         } else {

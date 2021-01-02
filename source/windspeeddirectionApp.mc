@@ -4,7 +4,6 @@ using Toybox.System;
 using Toybox.Time;
 using Toybox.WatchUi;
 
-
 var windSpeed = 0;
 var windGust = 0;
 var windDirection = 0;
@@ -13,44 +12,50 @@ var lastUpdated = null;
 (:background)   
 class windspeeddirectionApp extends Application.AppBase {
 
-    // TODO: implement settings from Garmin app for:
-    // weather data source, update frequency, etc.
-
     function initialize() {
-        System.println("App - Initialize");
         AppBase.initialize();
+        // System.println("App - Initialize");
         loadUserSettings();
     }
 
+    // function onStart(state) {
+    //     System.println("App - Start Up");
+    // }
+
+    // function onStop(state) {
+    //     System.println("App - Stopping");
+    // }
+
+    function onSettingsChanged() {
+        loadUserSettings();
+        WatchUi.requestUpdate();
+    }
+
+    // TODO: implement settings from Garmin app for:
+    // weather data source, update frequency, etc.
     function loadUserSettings() {
-        System.println("App - Load User Settings");
+        // System.println("App - Load User Settings");
+
+        // TODO: read apikey from user settings
+
         try {
             Storage.setValue("openWeatherAPI", Application.loadResource(Rez.Strings.apikeyOpenWeather));
             Storage.setValue("climaCellAPI", Application.loadResource(Rez.Strings.apikeyClimaCell));
 
-            var dataSource = Application.Properties.getValue("windDataSource");
-            var dataSourceOptions = {
+            var windDataSource = getProperty("windDataSource");
+            var options = {
                 1 => "openWeatherAPI",
                 2 => "climaCellAPI"
             };
-            Storage.setValue("dataSource", dataSourceOptions[dataSource]);
-
-            // TODO: read apikey from user settings
-
-            System.println("App - Settings added to Object Store");
+            System.println(options[windDataSource]);
+            Storage.setValue("dataSource", options[windDataSource]);
         } catch (exception instanceof ObjectStoreAccessException) {
-            System.println("BG - not allowed to modify object store");
+            System.println(exception.getErrorMessage());
         } catch (exception) {
-                exception.printStackTrace();
+            System.println("App - dataSource - weird exception");
         }
-    }
 
-    function onStart(state) {
-        // System.println("App - Start Up");
-    }
-
-    function onStop(state) {
-        // System.println("App - Stopping");
+        System.println("App - Settings added to Object Store");
     }
 
     function getInitialView() {

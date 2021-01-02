@@ -4,7 +4,6 @@ using Toybox.System;
 using Toybox.Time;
 using Toybox.WatchUi;
 
-
 var windSpeed = 0;
 var windGust = 0;
 var windDirection = 0;
@@ -13,38 +12,42 @@ var lastUpdated = null;
 (:background)   
 class windspeeddirectionApp extends Application.AppBase {
 
+    function initialize() {
+        AppBase.initialize();
+        // System.println("App - Initialize");
+        loadUserSettings();
+    }
+
+    // function onStart(state) {
+    // }
+
+    // function onStop(state) {
+    // }
+
+    function onSettingsChanged() {
+        loadUserSettings();
+    }
+
     // TODO: implement settings from Garmin app for:
     // weather data source, update frequency, etc.
-
-    function initialize() {
-        System.println("App - Initialize");
-        AppBase.initialize();
+    function loadUserSettings() {
+        // TODO: read apikey from user settings
         try {
+            var windDataSource = getProperty("windDataSource");
+            var options = {1 => "openWeatherAPI", 2 => "climaCellAPI"};
             Storage.setValue("openWeatherAPI", Application.loadResource(Rez.Strings.apikeyOpenWeather));
             Storage.setValue("climaCellAPI", Application.loadResource(Rez.Strings.apikeyClimaCell));
-            // TODO: read apikey from user settings
-            // Storage.setValue("dataSource", Application.loadResource(Rez.Properties.windDataSource));
-            System.println("App - Settings put in Object Store");
+            Storage.setValue("dataSource", options[windDataSource]);
+        } catch (exception instanceof ObjectStoreAccessException) {
+            System.println(exception.getErrorMessage());
         } catch (exception) {
-            if (!exception.getErrorMessage().equals("Background processes cannot modify the object store")) {
-                exception.printStackTrace();
-            }
+            System.println(exception.printStackTrace());
         }
     }
 
-    function onStart(state) {
-        // System.println("App - Start Up");
-    }
-
-    function onStop(state) {
-        // System.println("App - Stopping");
-    }
-
     function getInitialView() {
-        // System.println("App - Get Initial View");
         if (Toybox.System has :ServiceDelegate) {
             Background.registerForTemporalEvent(new Time.Duration(5 * 60));
-            // System.println("App - registerTemporalEvent");
         } else {
             System.println("Device doesn't support background service");
             System.exit();
@@ -53,7 +56,6 @@ class windspeeddirectionApp extends Application.AppBase {
     }
 
     function onBackgroundData(data) {
-        System.println("App - OnBackgroundData");
         if (!data.equals(-1)) {
             System.println("App - Good data from BG");
 

@@ -1,10 +1,8 @@
 using Toybox.WatchUi;
 using Toybox.Graphics;
 using Toybox.Position;
-using Toybox.Application;
 using Toybox.Time;
 using Toybox.Math;
-
 
 class windspeeddirectionView extends WatchUi.DataField {
 
@@ -13,8 +11,8 @@ class windspeeddirectionView extends WatchUi.DataField {
     var relativeWindDirection = 0;
 
     function initialize() {
-        // System.println("View - Initialize");
         DataField.initialize();
+        // System.println("View - Initialize");
     }
 
     // function onLayout(dc) {
@@ -23,7 +21,7 @@ class windspeeddirectionView extends WatchUi.DataField {
     // function compute(info) {
     // }
 
-    // find point along arc that fits within datafield dimensions
+    // Finds point along arc that fits within datafield dimensions
     // width and height of datafield dimensions
     function pointOnCircle(degree, radiusOffset, width, height) {
         var radius;
@@ -70,11 +68,11 @@ class windspeeddirectionView extends WatchUi.DataField {
         // datafield label
         dc.drawText(width - 35, height / 2 - 20, Graphics.FONT_TINY, "Wind", textCenter);
         
-        // call gps for position info
         if (Position.getInfo() != null) {
             positionInfo = Position.getInfo();
         }
 
+        // TODO: move into IF statement above ?
         if (positionInfo.heading != null){
             // Position.Info.heading guide
             // https://forums.garmin.com/developer/connect-iq/f/discussion/238145/wind-direction-indicator
@@ -110,6 +108,7 @@ class windspeeddirectionView extends WatchUi.DataField {
         dc.drawText(width - 35, (height / 2) + 1, Graphics.FONT_MEDIUM, windSpeedDisplay, textCenter);
 
         // data info
+        // TODO: check for data connection
         if ($.lastUpdated == null) {
             // no data message
             dc.drawText(width - 35, (height / 2) + 22, Graphics.FONT_TINY, "NO DATA", textCenter);
@@ -117,7 +116,11 @@ class windspeeddirectionView extends WatchUi.DataField {
             var lastUpdatedDisplay = $.lastUpdated.subtract(Time.now());
             // show message if data is more than 15 minutes old
             if ((lastUpdatedDisplay.value() / 60) >= 15) {
-                dc.drawText(width - 35, (height / 2) + 22, Graphics.FONT_TINY, (lastUpdatedDisplay.value() / 60), textCenter);
+                dc.drawText(width - 35,
+                             (height / 2) + 22, 
+                             Graphics.FONT_TINY, 
+                             (lastUpdatedDisplay.value() / 60), 
+                             textCenter);
             }
         }
     }

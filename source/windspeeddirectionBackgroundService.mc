@@ -34,7 +34,7 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
                 :responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_JSON	
             };
             var responseCallBack = null;
-            System.println("BG - requestWeatherData - Declared Variables");
+
             if (dataSource.equals("openWeatherAPI")) {
                 System.println("BG - " + dataSource);
                 url = "https://api.openweathermap.org/data/2.5/onecall";

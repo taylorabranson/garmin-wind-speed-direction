@@ -19,50 +19,35 @@ class windspeeddirectionApp extends Application.AppBase {
     }
 
     // function onStart(state) {
-    //     System.println("App - Start Up");
     // }
 
     // function onStop(state) {
-    //     System.println("App - Stopping");
     // }
 
     function onSettingsChanged() {
         loadUserSettings();
-        WatchUi.requestUpdate();
     }
 
     // TODO: implement settings from Garmin app for:
     // weather data source, update frequency, etc.
     function loadUserSettings() {
-        // System.println("App - Load User Settings");
-
         // TODO: read apikey from user settings
-
         try {
+            var windDataSource = getProperty("windDataSource");
+            var options = {1 => "openWeatherAPI", 2 => "climaCellAPI"};
             Storage.setValue("openWeatherAPI", Application.loadResource(Rez.Strings.apikeyOpenWeather));
             Storage.setValue("climaCellAPI", Application.loadResource(Rez.Strings.apikeyClimaCell));
-
-            var windDataSource = getProperty("windDataSource");
-            var options = {
-                1 => "openWeatherAPI",
-                2 => "climaCellAPI"
-            };
-            System.println(options[windDataSource]);
             Storage.setValue("dataSource", options[windDataSource]);
         } catch (exception instanceof ObjectStoreAccessException) {
             System.println(exception.getErrorMessage());
         } catch (exception) {
-            System.println("App - dataSource - weird exception");
+            System.println(exception.printStackTrace());
         }
-
-        System.println("App - Settings added to Object Store");
     }
 
     function getInitialView() {
-        // System.println("App - Get Initial View");
         if (Toybox.System has :ServiceDelegate) {
             Background.registerForTemporalEvent(new Time.Duration(5 * 60));
-            // System.println("App - registerTemporalEvent");
         } else {
             System.println("Device doesn't support background service");
             System.exit();
@@ -71,7 +56,6 @@ class windspeeddirectionApp extends Application.AppBase {
     }
 
     function onBackgroundData(data) {
-        System.println("App - OnBackgroundData");
         if (!data.equals(-1)) {
             System.println("App - Good data from BG");
 

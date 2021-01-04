@@ -35,9 +35,9 @@ class windspeeddirectionApp extends Application.AppBase {
         try {
             var windDataSource = getProperty("windDataSource");
             var options = {1 => "openWeatherAPI", 2 => "climaCellAPI"};
+            Storage.setValue("dataSource", options[windDataSource]);
             Storage.setValue("openWeatherAPI", Application.loadResource(Rez.Strings.apikeyOpenWeather));
             Storage.setValue("climaCellAPI", Application.loadResource(Rez.Strings.apikeyClimaCell));
-            Storage.setValue("dataSource", options[windDataSource]);
         } catch (exception instanceof ObjectStoreAccessException) {
             System.println(exception.getErrorMessage());
         } catch (exception) {

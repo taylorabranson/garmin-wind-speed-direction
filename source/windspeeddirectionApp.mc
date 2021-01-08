@@ -104,15 +104,15 @@ class windspeeddirectionApp extends Application.AppBase {
     function loadData(data) {
         var convertedData = convertData(data);
 
-        $.windSpeed = data["wind_speed"];
+        $.windSpeed = convertedData["wind_speed"];
         if ($.windSpeed == null) {
             $.windSpeed = 0;
         }
-        $.windGust = data["wind_gust"];
+        $.windGust = convertedData["wind_gust"];
         if ($.windGust == null) {
             $.windGust = 0;
         }
-        $.windDirection = data["wind_deg"];
+        $.windDirection = convertedData["wind_deg"];
         if ($.windDirection == null) {
             $.windDirection = 0;
         }

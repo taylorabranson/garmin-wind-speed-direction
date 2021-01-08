@@ -18,11 +18,14 @@ Side load application on device.
 
 Settings (in the Garmin Connect mobile app) are only available for apps downloaded from the Garmin Connect Store.
 
+## Features
+  - User selects unit type for wind speed (m/s, mph, kph)
+  - User selects data source
+  
 ### Planned Features
 
   Garmin Connect Settings
   - User input api-key
-  - User selects unit type for wind speed (m/s, mph, kph)
 
   Other
   - Check for data connection

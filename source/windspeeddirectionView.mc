@@ -114,7 +114,6 @@ class windspeeddirectionView extends WatchUi.DataField {
             dc.drawText(width - 35, (height / 2) + 22, Graphics.FONT_TINY, "NO CONN", textCenter);
         } else if ($.lastUpdated != null) {
             var lastUpdatedDisplay = $.lastUpdated.subtract(Time.now());
-            // show message if data is more than 15 minutes old
             if ((lastUpdatedDisplay.value() / 60) >= 15) {
                 dc.drawText(width - 35,
                              (height / 2) + 22, 

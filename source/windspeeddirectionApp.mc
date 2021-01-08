@@ -71,10 +71,9 @@ class windspeeddirectionApp extends Application.AppBase {
             System.println("App - Good data from BG");
 
             $.mostRecentData = data;
+            $.lastUpdated = new Time.Moment(Time.now().value());
 
             loadData(data);
-
-            $.lastUpdated = new Time.Moment(Time.now().value());
         } else {
             System.println("App - No Data from BG");
         }
@@ -85,12 +84,10 @@ class windspeeddirectionApp extends Application.AppBase {
         return [new windSpeedServiceDelegate()];
     }
 
-    function convertData(data) {
-        var unitsType = Storage.getValue("unitsType");
-        
-        if (unitsType.equals("imperial")) {
+    function convertData(data) {       
+        if ($.unitsType.equals("imperial")) {
             return data;
-        } else if (unitsType.equals("metric")) {
+        } else if ($.unitsType.equals("metric")) {
             data["wind_speed"] = data["wind_speed"] / 2.2369363;
             if (data["wind_gust"] != null) {
                 data["wind_gust"] = data["wind_gust"] / 2.2369363;

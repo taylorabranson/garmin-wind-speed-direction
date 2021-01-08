@@ -112,8 +112,8 @@ class windspeeddirectionView extends WatchUi.DataField {
         // TODO: check for data connection
         if (!System.getDeviceSettings().connectionAvailable) {
             dc.drawText(width - 35, (height / 2) + 22, Graphics.FONT_TINY, "NO CONN", textCenter);
-        } else if ($.lastUpdated != null) {
-            var lastUpdatedDisplay = $.lastUpdated.subtract(Time.now());
+        } else if ($.mostRecentData["last_updated"] != null) {
+            var lastUpdatedDisplay = $.mostRecentData["last_updated"].subtract(Time.now());
             if ((lastUpdatedDisplay.value() / 60) >= 15) {
                 dc.drawText(width - 35,
                              (height / 2) + 22, 

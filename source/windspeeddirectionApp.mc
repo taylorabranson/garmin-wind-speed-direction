@@ -8,6 +8,8 @@ var windSpeed = 0;
 var windGust = 0;
 var windDirection = 0;
 var lastUpdated = null;
+var unitsType = null;
+var mostRecentData = null;
 
 (:background)   
 class windspeeddirectionApp extends Application.AppBase {
@@ -33,15 +35,24 @@ class windspeeddirectionApp extends Application.AppBase {
     function loadUserSettings() {
         // TODO: read apikey from user settings
         try {
+            var userUnitsChoice = getProperty("unitsType");
+            var unitsOptions = {1 => "imperial", 2 => "metric"};
+            $.unitsType = unitsOptions[userUnitsChoice];
+
             var windDataSource = getProperty("windDataSource");
-            var options = {1 => "openWeatherAPI", 2 => "climaCellAPI"};
-            Storage.setValue("dataSource", options[windDataSource]);
+            var apiOptions = {1 => "openWeatherAPI", 2 => "climaCellAPI"};
+            Storage.setValue("dataSource", apiOptions[windDataSource]);
+
             Storage.setValue("openWeatherAPI", Application.loadResource(Rez.Strings.apikeyOpenWeather));
             Storage.setValue("climaCellAPI", Application.loadResource(Rez.Strings.apikeyClimaCell));
         } catch (exception instanceof ObjectStoreAccessException) {
             System.println(exception.getErrorMessage());
         } catch (exception) {
             System.println(exception.printStackTrace());
+        }
+
+        if ($.lastUpdated != null && $.mostRecentData != null) {
+            loadData($.mostRecentData);
         }
     }
 
@@ -59,18 +70,9 @@ class windspeeddirectionApp extends Application.AppBase {
         if (!data.equals(-1)) {
             System.println("App - Good data from BG");
 
-            $.windSpeed = data["wind_speed"];
-            if ($.windSpeed == null) {
-                $.windSpeed = 0;
-            }
-            $.windGust = data["wind_gust"];
-            if ($.windGust == null) {
-                $.windGust = 0;
-            }
-            $.windDirection = data["wind_deg"];
-            if ($.windDirection == null) {
-                $.windDirection = 0;
-            }
+            $.mostRecentData = data;
+
+            loadData(data);
 
             $.lastUpdated = new Time.Moment(Time.now().value());
         } else {
@@ -81,6 +83,39 @@ class windspeeddirectionApp extends Application.AppBase {
 
     function getServiceDelegate(){
         return [new windSpeedServiceDelegate()];
+    }
+
+    function convertData(data) {
+        var unitsType = Storage.getValue("unitsType");
+        
+        if (unitsType.equals("imperial")) {
+            return data;
+        } else if (unitsType.equals("metric")) {
+            data["wind_speed"] = data["wind_speed"] / 2.2369363;
+            if (data["wind_gust"] != null) {
+                data["wind_gust"] = data["wind_gust"] / 2.2369363;
+            }
+        } else {
+            System.println("Unit Type Property - invalid or not set");
+        }
+        return data;
+    }
+
+    function loadData(data) {
+        var convertedData = convertData(data);
+
+        $.windSpeed = data["wind_speed"];
+        if ($.windSpeed == null) {
+            $.windSpeed = 0;
+        }
+        $.windGust = data["wind_gust"];
+        if ($.windGust == null) {
+            $.windGust = 0;
+        }
+        $.windDirection = data["wind_deg"];
+        if ($.windDirection == null) {
+            $.windDirection = 0;
+        }
     }
 
 }

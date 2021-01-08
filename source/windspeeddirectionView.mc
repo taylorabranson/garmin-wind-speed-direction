@@ -3,6 +3,7 @@ using Toybox.Graphics;
 using Toybox.Position;
 using Toybox.Time;
 using Toybox.Math;
+using Toybox.System;
 
 class windspeeddirectionView extends WatchUi.DataField {
 
@@ -109,10 +110,9 @@ class windspeeddirectionView extends WatchUi.DataField {
 
         // data info
         // TODO: check for data connection
-        if ($.lastUpdated == null) {
-            // no data message
-            dc.drawText(width - 35, (height / 2) + 22, Graphics.FONT_TINY, "NO DATA", textCenter);
-        } else {
+        if (!System.getDeviceSettings().connectionAvailable) {
+            dc.drawText(width - 35, (height / 2) + 22, Graphics.FONT_TINY, "NO CONN", textCenter);
+        } else if ($.lastUpdated != null) {
             var lastUpdatedDisplay = $.lastUpdated.subtract(Time.now());
             // show message if data is more than 15 minutes old
             if ((lastUpdatedDisplay.value() / 60) >= 15) {
@@ -122,6 +122,8 @@ class windspeeddirectionView extends WatchUi.DataField {
                              (lastUpdatedDisplay.value() / 60), 
                              textCenter);
             }
+        } else {
+            dc.drawText(width - 35, (height / 2) + 22, Graphics.FONT_TINY, "NO DATA", textCenter);
         }
     }
 

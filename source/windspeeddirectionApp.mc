@@ -7,9 +7,13 @@ using Toybox.WatchUi;
 var windSpeed = 0;
 var windGust = 0;
 var windDirection = 0;
-var lastUpdated = null;
 var unitsType = null;
-var mostRecentData = null;
+var mostRecentData = {
+    "wind_speed" => null,
+    "wind_gust" => null,
+    "wind_deg" => null,
+    "last_updated" => null
+};
 
 (:background)   
 class windspeeddirectionApp extends Application.AppBase {
@@ -51,7 +55,7 @@ class windspeeddirectionApp extends Application.AppBase {
             System.println(exception.printStackTrace());
         }
 
-        if ($.lastUpdated != null && $.mostRecentData != null) {
+        if ($.mostRecentData["last_updated"] != null) {   
             loadData($.mostRecentData);
         }
     }
@@ -70,8 +74,10 @@ class windspeeddirectionApp extends Application.AppBase {
         if (!data.equals(-1)) {
             System.println("App - Good data from BG");
 
-            $.mostRecentData = data;
-            $.lastUpdated = new Time.Moment(Time.now().value());
+            $.mostRecentData["wind_speed"] = data["wind_speed"];
+            $.mostRecentData["wind_gust"] = data["wind_gust"];
+            $.mostRecentData["wind_deg"] = data["wind_deg"];
+            $.mostRecentData["last_updated"] = new Time.Moment(Time.now().value());
 
             loadData(data);
         } else {
@@ -84,22 +90,26 @@ class windspeeddirectionApp extends Application.AppBase {
         return [new windSpeedServiceDelegate()];
     }
 
-    function convertData(data) {       
+    function convertData(windspeed, windgust) {       
+        System.println("Convert Data to : " + $.unitsType);
+        var returnData = {};
         if ($.unitsType.equals("imperial")) {
-            return data;
+            returnData.put("wind_speed", windspeed);
+            returnData.put("wind_gust", windgust);
         } else if ($.unitsType.equals("metric")) {
-            data["wind_speed"] = data["wind_speed"] / 2.2369363;
-            if (data["wind_gust"] != null) {
-                data["wind_gust"] = data["wind_gust"] / 2.2369363;
+            returnData.put("wind_speed", (windspeed / 2.2369363));
+            if (windgust != null) {
+                returnData.put("wind_gust", (windgust / 2.2369363));
+            } else {
+                returnData.put("wind_gust", 0);
             }
-        } else {
-            System.println("Unit Type Property - invalid or not set");
         }
-        return data;
+        return returnData;
     }
 
     function loadData(data) {
-        var convertedData = convertData(data);
+        var convertedData = convertData(data["wind_speed"], data["wind_gust"]);
+        convertedData.put("wind_deg", data["wind_deg"]);
 
         $.windSpeed = convertedData["wind_speed"];
         if ($.windSpeed == null) {

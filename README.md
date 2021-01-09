@@ -6,7 +6,7 @@ Create an account for one or more weather API:
 
   - OpenWeather https://openweathermap.org/api
   - ClimaCell https://docs.climacell.co/reference/api-overview
-  - YahooWeather https://developer.yahoo.com/weather/
+  - YahooWeather https://developer.yahoo.com/weather/ (WIP)
 
 Enter API Keys in settings.xml
 

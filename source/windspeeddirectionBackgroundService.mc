@@ -13,15 +13,16 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
     }
 
     function onTemporalEvent() {
-        System.println("BG - onTemporalEvent");
+        // System.println("BG - onTemporalEvent");
         requestWeatherData();
     }
 
     function requestWeatherData() {
-        System.println("BG - requestWeatherData");
+        // System.println("BG - requestWeatherData");
         var dataSource = Storage.getValue("dataSource");
         var positionInfo = Position.getInfo().position.toDegrees();
         var apiKey = Storage.getValue(dataSource);
+        System.println(apiKey);
 
         if (positionInfo != null && apiKey != null && dataSource != null) {
             var url = null;

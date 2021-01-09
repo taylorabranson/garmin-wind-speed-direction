@@ -7,11 +7,11 @@ using Toybox.WatchUi;
 var windSpeed = 0;
 var windGust = 0;
 var windDirection = 0;
-var unitsType = null;
+var unitsType = "mph";
 var mostRecentData = {
-    "wind_speed" => null,
-    "wind_gust" => null,
-    "wind_deg" => null,
+    "wind_speed" => 0,
+    "wind_gust" => 0,
+    "wind_deg" => 0,
     "last_updated" => null
 };
 
@@ -40,15 +40,15 @@ class windspeeddirectionApp extends Application.AppBase {
         // TODO: read apikey from user settings
         try {
             var userUnitsChoice = getProperty("unitsType");
-            var unitsOptions = {1 => "imperial", 2 => "metric"};
+            var unitsOptions = {1 => "mph", 2 => "m/s"};
             $.unitsType = unitsOptions[userUnitsChoice];
 
             var windDataSource = getProperty("windDataSource");
             var apiOptions = {1 => "openWeatherAPI", 2 => "climaCellAPI"};
             Storage.setValue("dataSource", apiOptions[windDataSource]);
 
-            Storage.setValue("openWeatherAPI", Application.loadResource(Rez.Strings.apikeyOpenWeather));
-            Storage.setValue("climaCellAPI", Application.loadResource(Rez.Strings.apikeyClimaCell));
+            Storage.setValue("openWeatherAPI", getProperty("OpenWeatherKey"));
+            Storage.setValue("climaCellAPI", getProperty("ClimaCellKey"));
         } catch (exception instanceof ObjectStoreAccessException) {
             System.println(exception.getErrorMessage());
         } catch (exception) {
@@ -56,7 +56,7 @@ class windspeeddirectionApp extends Application.AppBase {
         }
 
         if ($.mostRecentData["last_updated"] != null) {   
-            loadData($.mostRecentData);
+            loadWindData($.mostRecentData);
         }
     }
 
@@ -74,12 +74,18 @@ class windspeeddirectionApp extends Application.AppBase {
         if (!data.equals(-1)) {
             System.println("App - Good data from BG");
 
-            $.mostRecentData["wind_speed"] = data["wind_speed"];
-            $.mostRecentData["wind_gust"] = data["wind_gust"];
-            $.mostRecentData["wind_deg"] = data["wind_deg"];
-            $.mostRecentData["last_updated"] = new Time.Moment(Time.now().value());
+            if (data["wind_speed"] == null) {
+                data["wind_speed"] = 0;
+            }
+            if (data["wind_gust"] == null) {
+                data["wind_gust"] = 0;
+            }
+            if (data["wind_deg"] == null) {
+                data["wind_deg"] = 0;
+            }
 
-            loadData(data);
+            saveWindData(data);
+            loadWindData(data);
         } else {
             System.println("App - No Data from BG");
         }
@@ -90,39 +96,37 @@ class windspeeddirectionApp extends Application.AppBase {
         return [new windSpeedServiceDelegate()];
     }
 
-    function convertData(windspeed, windgust) {       
-        System.println("Convert Data to : " + $.unitsType);
+    function saveWindData(data) {
+        // System.println("Save wind data");
+        $.mostRecentData["wind_speed"] = data["wind_speed"];
+        $.mostRecentData["wind_gust"] = data["wind_gust"];
+        $.mostRecentData["wind_deg"] = data["wind_deg"];
+        $.mostRecentData["last_updated"] = new Time.Moment(Time.now().value());
+    }
+
+    function convertWindData(windspeed, windgust) {       
+        // System.println("Convert Data to : " + $.unitsType);
         var returnData = {};
-        if ($.unitsType.equals("imperial")) {
+        if ($.unitsType.equals("mph")) {
             returnData.put("wind_speed", windspeed);
             returnData.put("wind_gust", windgust);
-        } else if ($.unitsType.equals("metric")) {
+        } else if ($.unitsType.equals("m/s")) {
             returnData.put("wind_speed", (windspeed / 2.2369363));
-            if (windgust != null) {
-                returnData.put("wind_gust", (windgust / 2.2369363));
-            } else {
-                returnData.put("wind_gust", 0);
-            }
+            returnData.put("wind_gust", (windgust / 2.2369363));
         }
+        System.println("Data converted");
         return returnData;
     }
 
-    function loadData(data) {
-        var convertedData = convertData(data["wind_speed"], data["wind_gust"]);
+    function loadWindData(data) {
+        // System.println("Load Wind Data");
+
+        var convertedData = convertWindData(data["wind_speed"], data["wind_gust"]);
         convertedData.put("wind_deg", data["wind_deg"]);
 
         $.windSpeed = convertedData["wind_speed"];
-        if ($.windSpeed == null) {
-            $.windSpeed = 0;
-        }
         $.windGust = convertedData["wind_gust"];
-        if ($.windGust == null) {
-            $.windGust = 0;
-        }
         $.windDirection = convertedData["wind_deg"];
-        if ($.windDirection == null) {
-            $.windDirection = 0;
-        }
     }
 
 }

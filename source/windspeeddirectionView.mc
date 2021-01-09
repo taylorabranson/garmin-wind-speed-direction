@@ -67,7 +67,8 @@ class windspeeddirectionView extends WatchUi.DataField {
         dc.fillRectangle(0, 0, width, height);
         dc.setColor((backgroundColor == Graphics.COLOR_BLACK) ? Graphics.COLOR_WHITE : Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
         // datafield label
-        dc.drawText(width - 35, height / 2 - 20, Graphics.FONT_TINY, "Wind", textCenter);
+        // dc.drawText(width - 35, height / 2-20, Graphics.FONT_TINY, "Wind", textCenter);
+        dc.drawText(width - 35, height / 2 - 20, Graphics.FONT_TINY, "Wind:" + $.unitsType, textCenter);
         
         if (Position.getInfo() != null) {
             positionInfo = Position.getInfo();
@@ -105,7 +106,8 @@ class windspeeddirectionView extends WatchUi.DataField {
         var arrow4 = pointOnCircle((relativeWindDirection + 145), 0, width, height);
         dc.fillPolygon([arrow1, arrow2, arrow3, arrow4]);
         
-        // wind speed and wind gust (if available), in mph
+        // TODO: show unit type, metric/imperial
+        // wind speed and wind gust (if available)
         dc.drawText(width - 35, (height / 2) + 1, Graphics.FONT_MEDIUM, windSpeedDisplay, textCenter);
 
         // data info

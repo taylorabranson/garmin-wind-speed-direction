@@ -118,10 +118,10 @@ class windspeeddirectionView extends WatchUi.DataField {
             var lastUpdatedDisplay = $.mostRecentData["last_updated"].subtract(Time.now());
             if ((lastUpdatedDisplay.value() / 60) >= 15) {
                 dc.drawText(width - 35,
-                             (height / 2) + 22, 
-                             Graphics.FONT_TINY, 
-                             (lastUpdatedDisplay.value() / 60), 
-                             textCenter);
+                            (height / 2) + 22, 
+                            Graphics.FONT_TINY, 
+                            (lastUpdatedDisplay.value() / 60), 
+                            textCenter);
             }
         } else {
             dc.drawText(width - 35, (height / 2) + 22, Graphics.FONT_TINY, "NO DATA", textCenter);

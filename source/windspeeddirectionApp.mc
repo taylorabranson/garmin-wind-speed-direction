@@ -50,9 +50,9 @@ class windspeeddirectionApp extends Application.AppBase {
             Storage.setValue("openWeatherAPI", getProperty("OpenWeatherKey"));
             Storage.setValue("climaCellAPI", getProperty("ClimaCellKey"));
         } catch (exception instanceof ObjectStoreAccessException) {
-            System.println(exception.getErrorMessage());
+            exception.printStackTrace();
         } catch (exception) {
-            System.println(exception.printStackTrace());
+            exception.printStackTrace();
         }
 
         if ($.mostRecentData["last_updated"] != null) {   
@@ -84,7 +84,7 @@ class windspeeddirectionApp extends Application.AppBase {
                 data["wind_deg"] = 0;
             }
 
-            saveWindData(data);
+            cacheWindData(data);
             loadWindData(data);
         } else {
             System.println("App - No Data from BG");
@@ -96,7 +96,7 @@ class windspeeddirectionApp extends Application.AppBase {
         return [new windSpeedServiceDelegate()];
     }
 
-    function saveWindData(data) {
+    function cacheWindData(data) {
         // System.println("Save wind data");
         $.mostRecentData["wind_speed"] = data["wind_speed"];
         $.mostRecentData["wind_gust"] = data["wind_gust"];

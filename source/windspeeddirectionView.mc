@@ -68,7 +68,7 @@ class windspeeddirectionView extends WatchUi.DataField {
         dc.setColor((backgroundColor == Graphics.COLOR_BLACK) ? Graphics.COLOR_WHITE : Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
         // datafield label
         // dc.drawText(width - 35, height / 2-20, Graphics.FONT_TINY, "Wind", textCenter);
-        dc.drawText(width - 35, height / 2 - 20, Graphics.FONT_TINY, "Wind:" + $.unitsType, textCenter);
+        dc.drawText(width - 35, height / 2 - 20, Graphics.FONT_TINY, $.unitsType, textCenter);
         
         if (Position.getInfo() != null) {
             positionInfo = Position.getInfo();

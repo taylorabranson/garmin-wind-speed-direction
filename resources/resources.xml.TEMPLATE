@@ -2,33 +2,58 @@
         <strings>
                 <string id="AppName">wind-direction</string>
 
-                <string id="apikeyOpenWeather" scope="background">API-KEY-HERE</string>
-                <string id="apikeyClimaCell" scope="background">API-KEY-HERE</string>
-                <string id="apikeyYahooWeather" scope="background">API-KEY-HERE</string>
-
-                <string id="windDataSourceTitle">API</string>
-                <string id="windDataSourcePrompt">Choose API for wind data:</string>
-                
+                <string id="windDataSourceTitle">Choose API for wind data:</string>
                 <string id="openWeather">OpenWeather API Key</string>
                 <string id="climaCell">ClimaCell  API Key</string>
-                
-        </strings>
 
+                <string id="unitsTypeTitle">Select Unit System</string>
+                <string id="unitsImperial">Miles Per Hour</string>
+                <string id="unitsMetric">Meters Per Second</string>
+
+                <string id="updateFrequencyTitle">Select Update Frequency"</string>
+                <string id="fiveMinutes">5 Min</string>
+                <string id="tenMinutes">10 Min</string>
+                <string id="fifteenMinutes">15 Min</string>
+                <string id="thirtyMinutes">30 Min</string>
+                <string id="sixtyMinutes">60 Min</string>
+        </strings>
 
         <properties>
                 <property id="windDataSource" type="number">1</property>
-                <property id="OpenWeatherKey" type="string">Open Weather API Key</property>
-                <property id="ClimaCellKey" type="string">ClimaCell API Key</property>
-        </properties>
+                <property id="unitsType" type="number">1</property>
+                <property id="updateFrequency" type="number">5</property>
 
+                <property id="OpenWeatherKey" type="string">API_KEY_HERE</property>
+                <property id="ClimaCellKey" type="string">API_KEY_HERE</property>
+                <property id="YahooWeatherKey" type="string">API_KEY_HERE</property>
+
+        </properties>
 
         <settings>
                 <setting propertyKey="@Properties.windDataSource"
-                         title="@Strings.windDataSourceTitle" 
-                         prompt="@Strings.windDataSourcePrompt">
+                         title="@Strings.windDataSourceTitle">
                         <settingConfig type="list">
                                 <listEntry value="1">@Strings.openWeather</listEntry>
                                 <listEntry value="2">@Strings.climaCell</listEntry>
+                        </settingConfig>
+                </setting>
+
+                <setting propertyKey="@Properties.unitsType"
+                         title="@Strings.unitsTypeTitle">
+                         <settingConfig type="list">
+                                <listEntry value="1">@Strings.unitsImperial</listEntry>
+                                <listEntry value="2">@Strings.unitsMetric</listEntry>
+                         </settingConfig>
+                </setting>
+                
+                <setting propertyKey="@Properties.updateFrequency"
+                         title="@Strings.updateFrequencyTitle">
+                        <settingConfig type="list">
+                                <listEntry value="5">@Strings.fiveMinutes</listEntry>
+                                <listEntry value="10">@Strings.tenMinutes</listEntry>
+                                <listEntry value="15">@Strings.fifteenMinutes</listEntry>
+                                <listEntry value="30">@Strings.thirtyMinutes</listEntry>
+                                <listEntry value="60">@Strings.sixtyMinutes</listEntry>
                         </settingConfig>
                 </setting>
         </settings>

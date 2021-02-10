@@ -55,7 +55,6 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
                     // API DOC: https://docs.climacell.co/reference/api-overview
                     "location" => positionInfo[0] + "," + positionInfo[1],
                     "fields" => "windSpeed,windDirection,windGust",
-                    // TODO: update timestep to "current" when API is updated
                     "timesteps" => "current",
                     "apikey" => apiKey
                 };

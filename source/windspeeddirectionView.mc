@@ -69,12 +69,8 @@ class windspeeddirectionView extends WatchUi.DataField {
         // datafield label
         // dc.drawText(width - 35, height / 2-20, Graphics.FONT_TINY, "Wind", textCenter);
         dc.drawText(width - 35, height / 2 - 20, Graphics.FONT_TINY, $.unitsType, textCenter);
-        
-        if (Position.getInfo() != null) {
-            positionInfo = Position.getInfo();
-        }
 
-        // TODO: move into IF statement above ?
+        positionInfo = Position.getInfo();
         if (positionInfo.heading != null){
             // Position.Info.heading guide
             // https://forums.garmin.com/developer/connect-iq/f/discussion/238145/wind-direction-indicator
@@ -106,12 +102,10 @@ class windspeeddirectionView extends WatchUi.DataField {
         var arrow4 = pointOnCircle((relativeWindDirection + 145), 0, width, height);
         dc.fillPolygon([arrow1, arrow2, arrow3, arrow4]);
         
-        // TODO: show unit type, metric/imperial
         // wind speed and wind gust (if available)
         dc.drawText(width - 35, (height / 2) + 1, Graphics.FONT_MEDIUM, windSpeedDisplay, textCenter);
 
         // data info
-        // TODO: check for data connection
         if (!System.getDeviceSettings().connectionAvailable) {
             dc.drawText(width - 35, (height / 2) + 22, Graphics.FONT_TINY, "NO CONN", textCenter);
         } else if ($.mostRecentData["last_updated"] != null) {

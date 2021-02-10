@@ -56,7 +56,7 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
                     "location" => positionInfo[0] + "," + positionInfo[1],
                     "fields" => "windSpeed,windDirection,windGust",
                     // TODO: update timestep to "current" when API is updated
-                    "timesteps" => "30m",
+                    "timesteps" => "current",
                     "apikey" => apiKey
                 };
                 responseCallBack = method(:onReceiveClimaCellResponse);

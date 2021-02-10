@@ -19,8 +19,8 @@ var mostRecentData = {
 class windspeeddirectionApp extends Application.AppBase {
 
     function initialize() {
-        AppBase.initialize();
         // System.println("App - Initialize");
+        AppBase.initialize();
         loadUserSettings();
     }
 
@@ -49,6 +49,9 @@ class windspeeddirectionApp extends Application.AppBase {
 
             Storage.setValue("openWeatherAPI", getProperty("OpenWeatherKey"));
             Storage.setValue("climaCellAPI", getProperty("ClimaCellKey"));
+
+            setBackgroundUpdate(getProperty("updateFrequency"));
+
         } catch (exception instanceof ObjectStoreAccessException) {
             exception.printStackTrace();
         } catch (exception) {
@@ -61,12 +64,7 @@ class windspeeddirectionApp extends Application.AppBase {
     }
 
     function getInitialView() {
-        if (Toybox.System has :ServiceDelegate) {
-            Background.registerForTemporalEvent(new Time.Duration(5 * 60));
-        } else {
-            System.println("Device doesn't support background service");
-            System.exit();
-        }
+        loadUserSettings();
         return [ new windspeeddirectionView() ];
     }
 
@@ -94,6 +92,15 @@ class windspeeddirectionApp extends Application.AppBase {
 
     function getServiceDelegate(){
         return [new windSpeedServiceDelegate()];
+    }
+
+    function setBackgroundUpdate(minutes) {
+        if (Toybox.System has :ServiceDelegate) {
+            Background.registerForTemporalEvent(new Time.Duration(minutes * 60));
+        } else {
+            System.println("Device doesn't support background service");
+            System.exit();
+        }
     }
 
     function cacheWindData(data) {

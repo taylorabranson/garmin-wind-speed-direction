@@ -67,7 +67,6 @@ class windspeeddirectionView extends WatchUi.DataField {
         dc.fillRectangle(0, 0, width, height);
         dc.setColor((backgroundColor == Graphics.COLOR_BLACK) ? Graphics.COLOR_WHITE : Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
         // datafield label
-        // dc.drawText(width - 35, height / 2-20, Graphics.FONT_TINY, "Wind", textCenter);
         dc.drawText(width - 35, height / 2 - 20, Graphics.FONT_TINY, $.unitsType, textCenter);
 
         positionInfo = Position.getInfo();
@@ -80,17 +79,15 @@ class windspeeddirectionView extends WatchUi.DataField {
             // South is PI (180 deg)
             
             // convert heading from radians to degrees
-            heading = Math.toDegrees(positionInfo.heading);
-
             // calculate relativeWindDirection in degrees
-            relativeWindDirection = ($.windDirection) - heading;
+            relativeWindDirection = ($.windDirection) - Math.toDegrees(positionInfo.heading);
 
-            // check if $.windGust data is available
+            windSpeedDisplay = $.windSpeed.format("%d");
             if ($.windGust != 0 && $.windGust != $.windSpeed) {
-                windSpeedDisplay = $.windSpeed.format("%d") + "(" + $.windGust.format("%d") + ")";
-            } else {
-                windSpeedDisplay = $.windSpeed.format("%d");
+                // check if $.windGust data is available
+                windSpeedDisplay = windSpeedDisplay + "(" + $.windGust.format("%d") + ")";
             }
+
         } else {
             return;
         }
@@ -105,14 +102,14 @@ class windspeeddirectionView extends WatchUi.DataField {
         // wind speed and wind gust (if available)
         dc.drawText(width - 35, (height / 2) + 1, Graphics.FONT_MEDIUM, windSpeedDisplay, textCenter);
 
-        // data info
+        // connection status info
         var message = "";
         if (!System.getDeviceSettings().connectionAvailable) {
             message = "NO CONN";
         } else if ($.mostRecentData["last_updated"] != null) {
             var lastUpdatedDisplay = $.mostRecentData["last_updated"].subtract(Time.now()).value();
             if (lastUpdatedDisplay / 60 >= 15) {
-                message = (lastUpdatedDisplay / 60);
+                message = (lastUpdatedDisplay / 60) + " MINit";
             }
         } else {
             message = "NO DATA";

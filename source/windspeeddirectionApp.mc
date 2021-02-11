@@ -53,9 +53,9 @@ class windspeeddirectionApp extends Application.AppBase {
             setBackgroundUpdate(getProperty("updateFrequency"));
 
         } catch (exception instanceof ObjectStoreAccessException) {
-            exception.printStackTrace();
+            // exception.printStackTrace();
         } catch (exception) {
-            exception.printStackTrace();
+            // exception.printStackTrace();
         }
 
         if ($.mostRecentData["last_updated"] != null) {   
@@ -70,7 +70,7 @@ class windspeeddirectionApp extends Application.AppBase {
 
     function onBackgroundData(data) {
         if (!data.equals(-1)) {
-            System.println("App - Good data from BG");
+            // System.println("App - Good data from BG");
 
             if (data["wind_speed"] == null) {
                 data["wind_speed"] = 0;
@@ -85,7 +85,7 @@ class windspeeddirectionApp extends Application.AppBase {
             cacheWindData(data);
             loadWindData(data);
         } else {
-            System.println("App - No Data from BG");
+            // System.println("App - No Data from BG");
         }
         WatchUi.requestUpdate();
     }
@@ -98,7 +98,7 @@ class windspeeddirectionApp extends Application.AppBase {
         if (Toybox.System has :ServiceDelegate) {
             Background.registerForTemporalEvent(new Time.Duration(minutes * 60));
         } else {
-            System.println("Device doesn't support background service");
+            // System.println("Device doesn't support background service");
             System.exit();
         }
     }
@@ -121,7 +121,7 @@ class windspeeddirectionApp extends Application.AppBase {
             returnData.put("wind_speed", (windspeed / 2.2369363));
             returnData.put("wind_gust", (windgust / 2.2369363));
         }
-        System.println("Data converted");
+        // System.println("Data converted");
         return returnData;
     }
 
@@ -129,11 +129,11 @@ class windspeeddirectionApp extends Application.AppBase {
         // System.println("Load Wind Data");
 
         var convertedData = convertWindData(data["wind_speed"], data["wind_gust"]);
-        convertedData.put("wind_deg", data["wind_deg"]);
+        // convertedData.put("wind_deg", data["wind_deg"]);
 
         $.windSpeed = convertedData["wind_speed"];
         $.windGust = convertedData["wind_gust"];
-        $.windDirection = convertedData["wind_deg"];
+        $.windDirection = data["wind_deg"];
     }
 
 }

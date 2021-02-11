@@ -25,7 +25,7 @@ NOTE: Settings (in the Garmin Connect mobile app) are only available for apps do
   - Show connection info if no connection available
   
 ### TODO
-  - Add YahooWeather API
+
 
 ### Planned Features
   - Use ClimaCell's wind forecast to provide wind data in absence of data connection

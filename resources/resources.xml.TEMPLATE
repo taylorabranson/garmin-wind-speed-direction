@@ -4,13 +4,14 @@
 
                 <string id="windDataSourceTitle">Choose API for wind data:</string>
                 <string id="openWeather">OpenWeather API Key</string>
-                <string id="climaCell">ClimaCell  API Key</string>
+                <string id="climaCell">ClimaCell API Key</string>
+                <string id="yahooWeather">YahooWeather API Key</string>
 
-                <string id="unitsTypeTitle">Select Unit System</string>
+                <string id="unitsTypeTitle">Select Unit System:</string>
                 <string id="unitsImperial">Miles Per Hour</string>
                 <string id="unitsMetric">Meters Per Second</string>
 
-                <string id="updateFrequencyTitle">Select Update Frequency"</string>
+                <string id="updateFrequencyTitle">Select Update Frequency:</string>
                 <string id="fiveMinutes">5 Min</string>
                 <string id="tenMinutes">10 Min</string>
                 <string id="fifteenMinutes">15 Min</string>
@@ -23,9 +24,9 @@
                 <property id="unitsType" type="number">1</property>
                 <property id="updateFrequency" type="number">5</property>
 
-                <property id="OpenWeatherKey" type="string">API_KEY_HERE</property>
-                <property id="ClimaCellKey" type="string">API_KEY_HERE</property>
-                <property id="YahooWeatherKey" type="string">API_KEY_HERE</property>
+                <property id="OpenWeatherKey" type="string">API KEY HERE</property>
+                <property id="ClimaCellKey" type="string">API KEY HERE</property>
+                <property id="YahooWeatherKey" type="string">API KEY HERE</property>
 
         </properties>
 
@@ -45,7 +46,7 @@
                                 <listEntry value="2">@Strings.unitsMetric</listEntry>
                          </settingConfig>
                 </setting>
-                
+
                 <setting propertyKey="@Properties.updateFrequency"
                          title="@Strings.updateFrequencyTitle">
                         <settingConfig type="list">
@@ -55,6 +56,24 @@
                                 <listEntry value="30">@Strings.thirtyMinutes</listEntry>
                                 <listEntry value="60">@Strings.sixtyMinutes</listEntry>
                         </settingConfig>
+                </setting>
+                
+                <setting propertyKey="@Properties.OpenWeatherKey"
+                         title="@Strings.openWeather">
+                         <settingConfig type="alphaNumeric">
+                         </settingConfig>
+                </setting>
+
+                <setting propertyKey="@Properties.ClimaCellKey"
+                         title="@Strings.climaCell">
+                         <settingConfig type="alphaNumeric">
+                         </settingConfig>
+                </setting>
+
+                <setting propertyKey="@Properties.YahooWeatherKey"
+                         title="@Strings.yahooWeather">
+                         <settingConfig type="alphanumeric">
+                         </settingConfig>
                 </setting>
         </settings>
 </resources>

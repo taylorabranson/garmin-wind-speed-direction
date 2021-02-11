@@ -38,36 +38,35 @@ class windspeeddirectionView extends WatchUi.DataField {
         // for setting a "notch" in arrow
         radius -= (radius * (radiusOffset));
 
-        // center horizontally on left half of view
         var xOffset = (width / 4);
-        // center vertically in view
         var yOffset = (height / 2);
 
-        // calculate a point along a circle with 3 o'clock as the starting
-        // point of the arc
+        // calculate a point along a circle with 3 o'clock as the starting point
         var x = (radius * (Math.cos(radians))) + xOffset;
         var y = (radius * (Math.sin(radians))) + yOffset;
 
         return [x,y];
     }
+    
+    function getArrowPoints(relativeWindDirection, width, height) {
+        var arrow1 = pointOnCircle(relativeWindDirection, 0, width, height);
+        var arrow2 = pointOnCircle((relativeWindDirection - 145), 0, width, height);
+        var arrow3 = pointOnCircle((relativeWindDirection + 180), 0.45, width, height);
+        var arrow4 = pointOnCircle((relativeWindDirection + 145), 0, width, height);
+        return [arrow1, arrow2, arrow3, arrow4];
+    }
 
-    // Display the value you computed here. This will be called
-    // once a second when the data field is visible.
     function onUpdate(dc) {
         // System.println("View - Onupdate");
-
         var width = dc.getWidth();
         var height = dc.getHeight();
         var textCenter = Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER;
-        var backgroundColor = getBackgroundColor();
         var windSpeedDisplay = "--";
 
-        // set background color
+        var backgroundColor = getBackgroundColor();
         dc.setColor(backgroundColor, Graphics.COLOR_TRANSPARENT);
         dc.fillRectangle(0, 0, width, height);
         dc.setColor((backgroundColor == Graphics.COLOR_BLACK) ? Graphics.COLOR_WHITE : Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
-        // datafield label
-        dc.drawText(width - 35, height / 2 - 20, Graphics.FONT_TINY, $.unitsType, textCenter);
 
         positionInfo = Position.getInfo();
         if (positionInfo.heading != null){
@@ -78,7 +77,6 @@ class windspeeddirectionView extends WatchUi.DataField {
             // West is -PI/2 radians (90deg CCW)
             // South is PI (180 deg)
             
-            // convert heading from radians to degrees
             // calculate relativeWindDirection in degrees
             relativeWindDirection = ($.windDirection) - Math.toDegrees(positionInfo.heading);
 
@@ -87,20 +85,9 @@ class windspeeddirectionView extends WatchUi.DataField {
                 // check if $.windGust data is available
                 windSpeedDisplay = windSpeedDisplay + "(" + $.windGust.format("%d") + ")";
             }
-
         } else {
             return;
         }
-
-        // show relativeWindDirection as arrow
-        var arrow1 = pointOnCircle(relativeWindDirection, 0, width, height);
-        var arrow2 = pointOnCircle((relativeWindDirection - 145), 0, width, height);
-        var arrow3 = pointOnCircle((relativeWindDirection + 180), 0.45, width, height);
-        var arrow4 = pointOnCircle((relativeWindDirection + 145), 0, width, height);
-        dc.fillPolygon([arrow1, arrow2, arrow3, arrow4]);
-        
-        // wind speed and wind gust (if available)
-        dc.drawText(width - 35, (height / 2) + 1, Graphics.FONT_MEDIUM, windSpeedDisplay, textCenter);
 
         // connection status info
         var message = "";
@@ -109,13 +96,15 @@ class windspeeddirectionView extends WatchUi.DataField {
         } else if ($.mostRecentData["last_updated"] != null) {
             var lastUpdatedDisplay = $.mostRecentData["last_updated"].subtract(Time.now()).value();
             if (lastUpdatedDisplay / 60 >= 15) {
-                message = (lastUpdatedDisplay / 60) + " MINit";
+                message = (lastUpdatedDisplay / 60) + " MIN";
             }
         } else {
             message = "NO DATA";
         }
 
+        dc.fillPolygon(getArrowPoints(relativeWindDirection, width, height));
+        dc.drawText(width - 35, height / 2 - 20, Graphics.FONT_TINY, $.unitsType, textCenter);
+        dc.drawText(width - 35, (height / 2) + 1, Graphics.FONT_MEDIUM, windSpeedDisplay, textCenter);
         dc.drawText(width - 35, (height / 2) + 22, Graphics.FONT_TINY, message, textCenter);
     }
-
 }

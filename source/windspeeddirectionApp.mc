@@ -21,11 +21,11 @@ class windspeeddirectionApp extends Application.AppBase {
     function initialize() {
         // System.println("App - Initialize");
         AppBase.initialize();
-        loadUserSettings();
     }
 
-    // function onStart(state) {
-    // }
+    function onStart(state) {
+        loadUserSettings();
+    }
 
     // function onStop(state) {
     // }
@@ -34,10 +34,7 @@ class windspeeddirectionApp extends Application.AppBase {
         loadUserSettings();
     }
 
-    // TODO: implement settings from Garmin app for:
-    // weather data source, update frequency, etc.
     function loadUserSettings() {
-        // TODO: read apikey from user settings
         try {
             var userUnitsChoice = getProperty("unitsType");
             var unitsOptions = {1 => "mph", 2 => "m/s"};
@@ -70,8 +67,6 @@ class windspeeddirectionApp extends Application.AppBase {
 
     function onBackgroundData(data) {
         if (!data.equals(-1)) {
-            // System.println("App - Good data from BG");
-
             if (data["wind_speed"] == null) {
                 data["wind_speed"] = 0;
             }
@@ -121,15 +116,13 @@ class windspeeddirectionApp extends Application.AppBase {
             returnData.put("wind_speed", (windspeed / 2.2369363));
             returnData.put("wind_gust", (windgust / 2.2369363));
         }
-        // System.println("Data converted");
+
         return returnData;
     }
 
     function loadWindData(data) {
         // System.println("Load Wind Data");
-
         var convertedData = convertWindData(data["wind_speed"], data["wind_gust"]);
-        // convertedData.put("wind_deg", data["wind_deg"]);
 
         $.windSpeed = convertedData["wind_speed"];
         $.windGust = convertedData["wind_gust"];

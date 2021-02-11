@@ -22,7 +22,6 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
         var dataSource = Storage.getValue("dataSource");
         var positionInfo = Position.getInfo().position.toDegrees();
         var apiKey = Storage.getValue(dataSource);
-        // System.println(apiKey);
 
         if (positionInfo != null && apiKey != null && dataSource != null) {
             var url = null;
@@ -64,9 +63,7 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
                 Background.exit(-1);
             }
 
-            // System.println("BG - requestWeatherData - makeWebRequest");
             Communications.makeWebRequest(url, params, options, responseCallBack);
-
         } else {
             Background.exit(-1);
         }
@@ -85,7 +82,6 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
             // System.println("BG - onReceive - noData - Response Code: " + responseCode);
             Background.exit(-1);
         }
-
     }
 
     function onReceiveClimaCellResponse(responseCode, responseData) {
@@ -103,5 +99,4 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
             Background.exit(-1);
         }
     }
-
 }

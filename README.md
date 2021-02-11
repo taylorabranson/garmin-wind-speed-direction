@@ -16,21 +16,16 @@ Create a build for your device using Garmin Connect IQ SDK.
 
 Side load application on device.
 
-Settings (in the Garmin Connect mobile app) are only available for apps downloaded from the Garmin Connect Store.
+NOTE: Settings (in the Garmin Connect mobile app) are only available for apps downloaded from the Garmin Connect Store. And so, entering API keys, selecting data source, etc. are unavailable when side loading.
 
 ## Features
   - User selects unit type for wind speed (m/s, mph, kph)
   - User selects data source
+  - User inputs api-key
+  - Show connection info if no connection available
   
-### Planned Features
-
-  Garmin Connect Settings
-  - User input api-key
-
-  Other
-  - Check for data connection
-  - Use ClimaCell's wind forecast to provide wind data in absence of data connection
-
 ### TODO
+  - Add YahooWeather API
 
-  - Update resources template (maybe?)
+### Planned Features
+  - Use ClimaCell's wind forecast to provide wind data in absence of data connection

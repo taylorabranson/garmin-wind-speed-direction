@@ -3,6 +3,7 @@ using Toybox.Graphics;
 using Toybox.Position;
 using Toybox.Time;
 using Toybox.Math;
+using Toybox.System;
 
 class windspeeddirectionView extends WatchUi.DataField {
 
@@ -66,13 +67,9 @@ class windspeeddirectionView extends WatchUi.DataField {
         dc.fillRectangle(0, 0, width, height);
         dc.setColor((backgroundColor == Graphics.COLOR_BLACK) ? Graphics.COLOR_WHITE : Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
         // datafield label
-        dc.drawText(width - 35, height / 2 - 20, Graphics.FONT_TINY, "Wind", textCenter);
-        
-        if (Position.getInfo() != null) {
-            positionInfo = Position.getInfo();
-        }
+        dc.drawText(width - 35, height / 2 - 20, Graphics.FONT_TINY, $.unitsType, textCenter);
 
-        // TODO: move into IF statement above ?
+        positionInfo = Position.getInfo();
         if (positionInfo.heading != null){
             // Position.Info.heading guide
             // https://forums.garmin.com/developer/connect-iq/f/discussion/238145/wind-direction-indicator
@@ -82,17 +79,15 @@ class windspeeddirectionView extends WatchUi.DataField {
             // South is PI (180 deg)
             
             // convert heading from radians to degrees
-            heading = Math.toDegrees(positionInfo.heading);
-
             // calculate relativeWindDirection in degrees
-            relativeWindDirection = ($.windDirection) - heading;
+            relativeWindDirection = ($.windDirection) - Math.toDegrees(positionInfo.heading);
 
-            // check if $.windGust data is available
+            windSpeedDisplay = $.windSpeed.format("%d");
             if ($.windGust != 0 && $.windGust != $.windSpeed) {
-                windSpeedDisplay = $.windSpeed.format("%d") + "(" + $.windGust.format("%d") + ")";
-            } else {
-                windSpeedDisplay = $.windSpeed.format("%d");
+                // check if $.windGust data is available
+                windSpeedDisplay = windSpeedDisplay + "(" + $.windGust.format("%d") + ")";
             }
+
         } else {
             return;
         }
@@ -104,25 +99,23 @@ class windspeeddirectionView extends WatchUi.DataField {
         var arrow4 = pointOnCircle((relativeWindDirection + 145), 0, width, height);
         dc.fillPolygon([arrow1, arrow2, arrow3, arrow4]);
         
-        // wind speed and wind gust (if available), in mph
+        // wind speed and wind gust (if available)
         dc.drawText(width - 35, (height / 2) + 1, Graphics.FONT_MEDIUM, windSpeedDisplay, textCenter);
 
-        // data info
-        // TODO: check for data connection
-        if ($.lastUpdated == null) {
-            // no data message
-            dc.drawText(width - 35, (height / 2) + 22, Graphics.FONT_TINY, "NO DATA", textCenter);
-        } else {
-            var lastUpdatedDisplay = $.lastUpdated.subtract(Time.now());
-            // show message if data is more than 15 minutes old
-            if ((lastUpdatedDisplay.value() / 60) >= 15) {
-                dc.drawText(width - 35,
-                             (height / 2) + 22, 
-                             Graphics.FONT_TINY, 
-                             (lastUpdatedDisplay.value() / 60), 
-                             textCenter);
+        // connection status info
+        var message = "";
+        if (!System.getDeviceSettings().connectionAvailable) {
+            message = "NO CONN";
+        } else if ($.mostRecentData["last_updated"] != null) {
+            var lastUpdatedDisplay = $.mostRecentData["last_updated"].subtract(Time.now()).value();
+            if (lastUpdatedDisplay / 60 >= 15) {
+                message = (lastUpdatedDisplay / 60) + " MINit";
             }
+        } else {
+            message = "NO DATA";
         }
+
+        dc.drawText(width - 35, (height / 2) + 22, Graphics.FONT_TINY, message, textCenter);
     }
 
 }

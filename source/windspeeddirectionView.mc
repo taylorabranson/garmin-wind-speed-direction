@@ -106,20 +106,19 @@ class windspeeddirectionView extends WatchUi.DataField {
         dc.drawText(width - 35, (height / 2) + 1, Graphics.FONT_MEDIUM, windSpeedDisplay, textCenter);
 
         // data info
+        var message = "";
         if (!System.getDeviceSettings().connectionAvailable) {
-            dc.drawText(width - 35, (height / 2) + 22, Graphics.FONT_TINY, "NO CONN", textCenter);
+            message = "NO CONN";
         } else if ($.mostRecentData["last_updated"] != null) {
-            var lastUpdatedDisplay = $.mostRecentData["last_updated"].subtract(Time.now());
-            if ((lastUpdatedDisplay.value() / 60) >= 15) {
-                dc.drawText(width - 35,
-                            (height / 2) + 22, 
-                            Graphics.FONT_TINY, 
-                            (lastUpdatedDisplay.value() / 60), 
-                            textCenter);
+            var lastUpdatedDisplay = $.mostRecentData["last_updated"].subtract(Time.now()).value();
+            if (lastUpdatedDisplay / 60 >= 15) {
+                message = (lastUpdatedDisplay / 60);
             }
         } else {
-            dc.drawText(width - 35, (height / 2) + 22, Graphics.FONT_TINY, "NO DATA", textCenter);
+            message = "NO DATA";
         }
+
+        dc.drawText(width - 35, (height / 2) + 22, Graphics.FONT_TINY, message, textCenter);
     }
 
 }

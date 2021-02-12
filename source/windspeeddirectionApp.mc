@@ -94,13 +94,11 @@ class windspeeddirectionApp extends Application.AppBase {
         if (Toybox.System has :ServiceDelegate) {
             Background.registerForTemporalEvent(new Time.Duration(minutes * 60));
         } else {
-            // System.println("Device doesn't support background service");
             System.exit();
         }
     }
 
     function cacheWindData(data) {
-        // System.println("Save wind data");
         $.mostRecentData["wind_speed"] = data["wind_speed"];
         $.mostRecentData["wind_gust"] = data["wind_gust"];
         $.mostRecentData["wind_deg"] = data["wind_deg"];
@@ -108,7 +106,6 @@ class windspeeddirectionApp extends Application.AppBase {
     }
 
     function convertWindData(windspeed, windgust) {       
-        // System.println("Convert Data to : " + $.unitsType);
         var returnData = {};
         if ($.unitsType.equals("mph")) {
             returnData.put("wind_speed", windspeed);
@@ -122,7 +119,6 @@ class windspeeddirectionApp extends Application.AppBase {
     }
 
     function loadWindData(data) {
-        // System.println("Load Wind Data");
         var convertedData = convertWindData(data["wind_speed"], data["wind_gust"]);
 
         $.windSpeed = convertedData["wind_speed"];

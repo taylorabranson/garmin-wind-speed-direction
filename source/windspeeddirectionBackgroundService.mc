@@ -36,9 +36,9 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
             var responseCallBack = null;
 
             if (dataSource.equals("openWeatherAPI")) {
+                // API DOC: https://openweathermap.org/api/one-call-api
                 url = "https://api.openweathermap.org/data/2.5/onecall";
                 params = {
-                    // API DOC: https://openweathermap.org/api/one-call-api
                     "lat" => positionInfo[0],
                     "lon" => positionInfo[1],
                     "exclude" => "minutely,hourly,daily,alerts",
@@ -47,9 +47,9 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
                 };
                 responseCallBack = method(:onReceiveOpenWeatherResponse);
             } else if (dataSource.equals("climaCellAPI")) {
+                // API DOC: https://docs.climacell.co/reference/api-overview
                 url = "https://data.climacell.co/v4/timelines";
                 params = {
-                    // API DOC: https://docs.climacell.co/reference/api-overview
                     "location" => positionInfo[0] + "," + positionInfo[1],
                     "fields" => "windSpeed,windDirection,windGust",
                     "timesteps" => "current",

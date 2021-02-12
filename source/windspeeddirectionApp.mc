@@ -41,11 +41,12 @@ class windspeeddirectionApp extends Application.AppBase {
             $.unitsType = unitsOptions[userUnitsChoice];
 
             var windDataSource = getProperty("windDataSource");
-            var apiOptions = {1 => "openWeatherAPI", 2 => "climaCellAPI"};
+            var apiOptions = {1 => "openWeatherAPI", 2 => "climaCellAPI", 3 => "weatherBitAPI"};
             Storage.setValue("dataSource", apiOptions[windDataSource]);
 
             Storage.setValue("openWeatherAPI", getProperty("OpenWeatherKey"));
             Storage.setValue("climaCellAPI", getProperty("ClimaCellKey"));
+            Storage.setValue("weatherBitAPI", getProperty("WeatherBitKey"));
 
             setBackgroundUpdate(getProperty("updateFrequency"));
 

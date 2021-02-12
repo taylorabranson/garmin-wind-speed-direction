@@ -36,7 +36,6 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
             var responseCallBack = null;
 
             if (dataSource.equals("openWeatherAPI")) {
-                // System.println("BG - " + dataSource);
                 url = "https://api.openweathermap.org/data/2.5/onecall";
                 params = {
                     // API DOC: https://openweathermap.org/api/one-call-api
@@ -48,7 +47,6 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
                 };
                 responseCallBack = method(:onReceiveOpenWeatherResponse);
             } else if (dataSource.equals("climaCellAPI")) {
-                // System.println("BG - " + dataSource);
                 url = "https://data.climacell.co/v4/timelines";
                 params = {
                     // API DOC: https://docs.climacell.co/reference/api-overview
@@ -58,8 +56,17 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
                     "apikey" => apiKey
                 };
                 responseCallBack = method(:onReceiveClimaCellResponse);
+            } else if (dataSource.equals("weatherBitAPI")) {
+                //  API DOC: https://www.weatherbit.io/api/weather-current
+                url = "http://api.weatherbit.io/v2.0/current";
+                params = {
+                    "lat" => positionInfo[0],
+                    "lon" => positionInfo[1],
+                    "units" => "I",
+                    "key" => apiKey
+                };
+                responseCallBack = method(:onReceiveWeatherBitResponse);
             } else {
-                // System.println("BG - Not a valid data source");
                 Background.exit(-1);
             }
 
@@ -71,7 +78,6 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
 
     function onReceiveOpenWeatherResponse(responseCode, responseData) {
         if (responseCode == 200 && responseData != null) {
-            // System.println("BG - onReceive - Response Code: " + responseCode);
             var data = {
                 "wind_speed" => responseData["current"]["wind_speed"],
                 "wind_gust" => responseData["current"]["wind_gust"],
@@ -79,23 +85,34 @@ class windSpeedServiceDelegate extends System.ServiceDelegate {
             };
             Background.exit(data);
         } else {
-            // System.println("BG - onReceive - noData - Response Code: " + responseCode);
             Background.exit(-1);
         }
     }
 
     function onReceiveClimaCellResponse(responseCode, responseData) {
         if (responseCode == 200 && responseData != null) {
-            // System.println("BG - onReceive - Response Code: " + responseCode);
-            var currentWeather = responseData["data"]["timelines"][0]["intervals"][0]["values"];
+            var current = responseData["data"]["timelines"][0]["intervals"][0]["values"];
             var data = {
-                "wind_speed" => currentWeather["windSpeed"] * 2.236936,
-                "wind_gust" => currentWeather["windGust"] * 2.236936,
-                "wind_deg" => currentWeather["windDirection"]
+                "wind_speed" => current["windSpeed"] * 2.236936,
+                "wind_gust" => current["windGust"] * 2.236936,
+                "wind_deg" => current["windDirection"]
             };
             Background.exit(data);
         } else {
-            // System.println("BG - onReceive - noData - Response Code: " + responseCode);
+            Background.exit(-1);
+        }
+    }
+
+    function onReceiveWeatherBitResponse(responseCode, responseData) {
+        if (responseCode == 200 && responseData != null) {
+            var current = responseData["data"][0];
+            var data = {
+                "wind_speed" => current["wind_spd"],
+                "wind_deg" => current["wind_dir"],
+                "wind_gust" => 0
+            };
+            Background.exit(data);
+        } else {
             Background.exit(-1);
         }
     }

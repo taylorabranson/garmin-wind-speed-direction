@@ -3,9 +3,9 @@
                 <string id="AppName">wind-direction</string>
 
                 <string id="windDataSourceTitle">Choose API for wind data:</string>
-                <string id="openWeather">OpenWeather API Key</string>
-                <string id="climaCell">ClimaCell API Key</string>
-                <string id="weatherBit">WeatherBit API Key</string>
+                <string id="openWeather">OpenWeather</string>
+                <string id="climaCell">ClimaCell</string>
+                <string id="weatherBit">WeatherBit</string>
 
                 <string id="unitsTypeTitle">Select Unit System:</string>
                 <string id="unitsImperial">Miles Per Hour</string>
@@ -17,6 +17,10 @@
                 <string id="fifteenMinutes">15 Min</string>
                 <string id="thirtyMinutes">30 Min</string>
                 <string id="sixtyMinutes">60 Min</string>
+
+                <string id="openWeatherApiTitle">OpenWeather API Key</string>
+                <string id="climaCellApiTitle">ClimaCell API Key</string>
+                <string id="weatherBitApiTitle">WeatherBit API Key</string>
         </strings>
 
         <properties>
@@ -60,19 +64,19 @@
                 </setting>
                 
                 <setting propertyKey="@Properties.OpenWeatherKey"
-                         title="@Strings.openWeather">
+                         title="@Strings.openWeatherApiTitle">
                          <settingConfig type="alphaNumeric">
                          </settingConfig>
                 </setting>
 
                 <setting propertyKey="@Properties.ClimaCellKey"
-                         title="@Strings.climaCell">
+                         title="@Strings.climaCellApiTitle">
                          <settingConfig type="alphaNumeric">
                          </settingConfig>
                 </setting>
 
                 <setting propertyKey="@Properties.WeatherBitKey"
-                         title="@Strings.weatherBit">
+                         title="@Strings.weatherBitApiTitle">
                         <settingConfig type="alphaNumeric">
                         </settingConfig>
                 </setting>

@@ -5,20 +5,17 @@ using Toybox.System;
 using Toybox.Position;
 
 (:background)
-class windSpeedServiceDelegate extends System.ServiceDelegate {
+class windBGService extends System.ServiceDelegate {
 
     function initialize() {
         System.ServiceDelegate.initialize();
-        // System.println("BG - Initialize");
     }
 
     function onTemporalEvent() {
-        // System.println("BG - onTemporalEvent");
         requestWeatherData();
     }
 
     function requestWeatherData() {
-        // System.println("BG - requestWeatherData");
         var dataSource = Storage.getValue("dataSource");
         var positionInfo = Position.getInfo().position.toDegrees();
         var apiKey = Storage.getValue(dataSource);

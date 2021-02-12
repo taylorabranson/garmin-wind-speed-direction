@@ -16,10 +16,9 @@ var mostRecentData = {
 };
 
 (:background)   
-class windspeeddirectionApp extends Application.AppBase {
+class windApp extends Application.AppBase {
 
     function initialize() {
-        // System.println("App - Initialize");
         AppBase.initialize();
     }
 
@@ -41,7 +40,11 @@ class windspeeddirectionApp extends Application.AppBase {
             $.unitsType = unitsOptions[userUnitsChoice];
 
             var windDataSource = getProperty("windDataSource");
-            var apiOptions = {1 => "openWeatherAPI", 2 => "climaCellAPI", 3 => "weatherBitAPI"};
+            var apiOptions = {
+                1 => "openWeatherAPI", 
+                2 => "climaCellAPI", 
+                3 => "weatherBitAPI"
+                };
             Storage.setValue("dataSource", apiOptions[windDataSource]);
 
             Storage.setValue("openWeatherAPI", getProperty("OpenWeatherKey"));
@@ -63,7 +66,7 @@ class windspeeddirectionApp extends Application.AppBase {
 
     function getInitialView() {
         loadUserSettings();
-        return [ new windspeeddirectionView() ];
+        return [ new windView() ];
     }
 
     function onBackgroundData(data) {
@@ -80,14 +83,12 @@ class windspeeddirectionApp extends Application.AppBase {
 
             cacheWindData(data);
             loadWindData(data);
-        } else {
-            // System.println("App - No Data from BG");
         }
         WatchUi.requestUpdate();
     }
 
     function getServiceDelegate(){
-        return [new windSpeedServiceDelegate()];
+        return [new windBGService()];
     }
 
     function setBackgroundUpdate(minutes) {

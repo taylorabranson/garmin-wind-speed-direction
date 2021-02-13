@@ -91,10 +91,10 @@ class windView extends WatchUi.DataField {
         var message = "";
         if (!System.getDeviceSettings().connectionAvailable) {
             message = "NO CONN";
-        } else if ($.mostRecentData["last_updated"] != null) {
-            var lastUpdated = $.mostRecentData["last_updated"].subtract(Time.now()).value();
-            if (lastUpdated / 60 >= 15) {
-                message = (lastUpdated / 60) + " MIN";
+        } else if ($.lastUpdated != null) {
+            var sec = $.lastUpdated.subtract(Time.now()).value();
+            if (sec / 60 >= 0) {
+                message = (sec / 60) + " MIN";
             }
         } else {
             message = "NO DATA";

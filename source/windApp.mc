@@ -7,19 +7,17 @@ using Toybox.WatchUi;
 var windSpeed = 0;
 var windGust = 0;
 var windDirection = 0;
-var unitsType = "mph";
-var mostRecentData = {
-    "wind_speed" => 0,
-    "wind_gust" => 0,
-    "wind_deg" => 0,
-    "last_updated" => null
-};
+
 var isCaching = true;
+
+var lastUpdated = null;
+var unitsType = "mph";
 
 (:background)   
 class windApp extends Application.AppBase {
 
     var forecast = {};
+    var interval = 30;
     
     function initialize() {
         AppBase.initialize();
@@ -34,6 +32,7 @@ class windApp extends Application.AppBase {
 
     function onSettingsChanged() {
         loadUserSettings();
+        loadWindData();
     }
 
     function loadUserSettings() {
@@ -56,14 +55,12 @@ class windApp extends Application.AppBase {
 
             setBackgroundUpdate(getProperty("updateFrequency"));
 
+            isCaching = getProperty("cacheClimaCell");
+
         } catch (exception instanceof ObjectStoreAccessException) {
             // exception.printStackTrace();
         } catch (exception) {
             // exception.printStackTrace();
-        }
-
-        if ($.mostRecentData["last_updated"] != null) {   
-            loadWindData($.mostRecentData);
         }
     }
 
@@ -87,8 +84,9 @@ class windApp extends Application.AppBase {
             }
 
             cacheWindData(data);
-            loadWindData(data);
         }
+
+        loadWindData();
         WatchUi.requestUpdate();
     }
 
@@ -105,10 +103,8 @@ class windApp extends Application.AppBase {
     }
 
     function cacheWindData(data) {
-        $.mostRecentData["wind_speed"] = data[0]["wind_speed"];
-        $.mostRecentData["wind_gust"] = data[0]["wind_gust"];
-        $.mostRecentData["wind_deg"] = data[0]["wind_deg"];
-        $.mostRecentData["last_updated"] = new Time.Moment(Time.now().value());
+        $.lastUpdated = new Time.Moment(Time.now().value());
+        forecast = {};
 
         for (var i = 0; i < data.size(); i++) {
             forecast.put(i, data[i]);
@@ -128,12 +124,27 @@ class windApp extends Application.AppBase {
         return returnData;
     }
 
-    function loadWindData(data) {
-        var convertedData = convertWindData(data[0]["wind_speed"], data[0]["wind_gust"]);
+    function loadWindData() {
+        if ($.lastUpdated == null) {
+            return;
+        }
 
-        $.windSpeed = convertedData["wind_speed"];
-        $.windGust = convertedData["wind_gust"];
-        $.windDirection = data[0]["wind_deg"];
+        var sec = $.lastUpdated.subtract(Time.now()).value();
+        var entry = (sec / 60) / interval;
+        entry = entry.toNumber();
+        if (forecast.hasKey(entry)) {
+            var current = forecast.get(entry);
+            var converted = convertWindData(current["wind_speed"], current["wind_gust"]);
+
+            $.windSpeed = converted["wind_speed"];
+            $.windGust = converted["wind_gust"];
+            $.windDirection = current["wind_deg"];
+        } else {
+            var converted = convertWindData(forecast[0]["wind_speed"], forecast[0]["wind_gust"]);
+            $.windSpeed = converted["wind_speed"];
+            $.windGust = converted["wind_gust"];
+            $.windDirection = forecast[0]["wind_deg"];
+        }
     }
 
 }

@@ -12,14 +12,15 @@ var mostRecentData = {
     "wind_speed" => 0,
     "wind_gust" => 0,
     "wind_deg" => 0,
-    "last_updated" => null,
-    "forecast" => {}
+    "last_updated" => null
 };
-var forecast = {};
+var isCaching = true;
 
 (:background)   
 class windApp extends Application.AppBase {
 
+    var forecast = {};
+    
     function initialize() {
         AppBase.initialize();
     }
@@ -73,14 +74,16 @@ class windApp extends Application.AppBase {
 
     function onBackgroundData(data) {
         if (!data.equals(-1)) {
-            if (data[0]["wind_speed"] == null) {
-                data[0]["wind_speed"] = 0;
-            }
-            if (data[0]["wind_gust"] == null) {
-                data[0]["wind_gust"] = 0;
-            }
-            if (data[0]["wind_deg"] == null) {
-                data[0]["wind_deg"] = 0;
+            for (var i = 0; i < data.size(); i++) {
+                if (data[i]["wind_speed"] == null) {
+                    data[i]["wind_speed"] = 0;
+                }
+                if (data[i]["wind_gust"] == null) {
+                    data[i]["wind_gust"] = 0;
+                }
+                if (data[i]["wind_deg"] == null) {
+                    data[i]["wind_deg"] = 0;
+                }
             }
 
             cacheWindData(data);
@@ -106,6 +109,10 @@ class windApp extends Application.AppBase {
         $.mostRecentData["wind_gust"] = data[0]["wind_gust"];
         $.mostRecentData["wind_deg"] = data[0]["wind_deg"];
         $.mostRecentData["last_updated"] = new Time.Moment(Time.now().value());
+
+        for (var i = 0; i < data.size(); i++) {
+            forecast.put(i, data[i]);
+        }
     }
 
     function convertWindData(windspeed, windgust) {       

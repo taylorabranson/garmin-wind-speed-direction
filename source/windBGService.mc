@@ -49,7 +49,7 @@ class windBGService extends System.ServiceDelegate {
                 params = {
                     "location" => positionInfo[0] + "," + positionInfo[1],
                     "fields" => "windSpeed,windDirection,windGust",
-                    "timesteps" => "current",
+                    "timesteps" => ($.isCaching == true) ? "30m" : "current",
                     "apikey" => apiKey
                 };
                 responseCallBack = method(:onReceiveClimaCellResponse);

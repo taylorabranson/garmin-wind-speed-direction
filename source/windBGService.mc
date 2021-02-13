@@ -75,11 +75,11 @@ class windBGService extends System.ServiceDelegate {
 
     function onReceiveOpenWeatherResponse(responseCode, responseData) {
         if (responseCode == 200 && responseData != null) {
-            var data = {
+            var data = {0 => {
                 "wind_speed" => responseData["current"]["wind_speed"],
                 "wind_gust" => responseData["current"]["wind_gust"],
                 "wind_deg" => responseData["current"]["wind_deg"]
-            };
+            }};
             Background.exit(data);
         } else {
             Background.exit(-1);
@@ -88,12 +88,18 @@ class windBGService extends System.ServiceDelegate {
 
     function onReceiveClimaCellResponse(responseCode, responseData) {
         if (responseCode == 200 && responseData != null) {
-            var current = responseData["data"]["timelines"][0]["intervals"][0]["values"];
-            var data = {
-                "wind_speed" => current["windSpeed"] * 2.236936,
-                "wind_gust" => current["windGust"] * 2.236936,
-                "wind_deg" => current["windDirection"]
-            };
+            var current = responseData["data"]["timelines"][0]["intervals"];
+            var data = {};
+
+            for (var i = 0; i < current.size(); i++) {
+                data.put(i, {
+                    "wind_speed" => current[i]["values"]["windSpeed"] * 2.236936,
+                    "wind_gust" => current[i]["values"]["windGust"] * 2.236936,
+                    "wind_deg" => current[i]["values"]["windDirection"]
+                });
+            }
+
+
             Background.exit(data);
         } else {
             Background.exit(-1);
@@ -103,11 +109,11 @@ class windBGService extends System.ServiceDelegate {
     function onReceiveWeatherBitResponse(responseCode, responseData) {
         if (responseCode == 200 && responseData != null) {
             var current = responseData["data"][0];
-            var data = {
+            var data = {0 => {
                 "wind_speed" => current["wind_spd"],
                 "wind_deg" => current["wind_dir"],
                 "wind_gust" => 0
-            };
+            }};
             Background.exit(data);
         } else {
             Background.exit(-1);

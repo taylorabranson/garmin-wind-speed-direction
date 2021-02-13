@@ -12,8 +12,10 @@ var mostRecentData = {
     "wind_speed" => 0,
     "wind_gust" => 0,
     "wind_deg" => 0,
-    "last_updated" => null
+    "last_updated" => null,
+    "forecast" => {}
 };
+var forecast = {};
 
 (:background)   
 class windApp extends Application.AppBase {
@@ -71,14 +73,14 @@ class windApp extends Application.AppBase {
 
     function onBackgroundData(data) {
         if (!data.equals(-1)) {
-            if (data["wind_speed"] == null) {
-                data["wind_speed"] = 0;
+            if (data[0]["wind_speed"] == null) {
+                data[0]["wind_speed"] = 0;
             }
-            if (data["wind_gust"] == null) {
-                data["wind_gust"] = 0;
+            if (data[0]["wind_gust"] == null) {
+                data[0]["wind_gust"] = 0;
             }
-            if (data["wind_deg"] == null) {
-                data["wind_deg"] = 0;
+            if (data[0]["wind_deg"] == null) {
+                data[0]["wind_deg"] = 0;
             }
 
             cacheWindData(data);
@@ -100,9 +102,9 @@ class windApp extends Application.AppBase {
     }
 
     function cacheWindData(data) {
-        $.mostRecentData["wind_speed"] = data["wind_speed"];
-        $.mostRecentData["wind_gust"] = data["wind_gust"];
-        $.mostRecentData["wind_deg"] = data["wind_deg"];
+        $.mostRecentData["wind_speed"] = data[0]["wind_speed"];
+        $.mostRecentData["wind_gust"] = data[0]["wind_gust"];
+        $.mostRecentData["wind_deg"] = data[0]["wind_deg"];
         $.mostRecentData["last_updated"] = new Time.Moment(Time.now().value());
     }
 
@@ -120,11 +122,11 @@ class windApp extends Application.AppBase {
     }
 
     function loadWindData(data) {
-        var convertedData = convertWindData(data["wind_speed"], data["wind_gust"]);
+        var convertedData = convertWindData(data[0]["wind_speed"], data[0]["wind_gust"]);
 
         $.windSpeed = convertedData["wind_speed"];
         $.windGust = convertedData["wind_gust"];
-        $.windDirection = data["wind_deg"];
+        $.windDirection = data[0]["wind_deg"];
     }
 
 }

@@ -5,7 +5,7 @@ using Toybox.Time;
 using Toybox.Math;
 using Toybox.System;
 
-class windspeeddirectionView extends WatchUi.DataField {
+class windView extends WatchUi.DataField {
 
     var positionInfo;
     var heading;
@@ -13,7 +13,6 @@ class windspeeddirectionView extends WatchUi.DataField {
 
     function initialize() {
         DataField.initialize();
-        // System.println("View - Initialize");
     }
 
     // function onLayout(dc) {
@@ -48,16 +47,15 @@ class windspeeddirectionView extends WatchUi.DataField {
         return [x,y];
     }
     
-    function getArrowPoints(relativeWindDirection, width, height) {
-        var arrow1 = pointOnCircle(relativeWindDirection, 0, width, height);
-        var arrow2 = pointOnCircle((relativeWindDirection - 145), 0, width, height);
-        var arrow3 = pointOnCircle((relativeWindDirection + 180), 0.45, width, height);
-        var arrow4 = pointOnCircle((relativeWindDirection + 145), 0, width, height);
+    function getArrowPoints(degree, width, height) {
+        var arrow1 = pointOnCircle(degree, 0, width, height);
+        var arrow2 = pointOnCircle((degree - 145), 0, width, height);
+        var arrow3 = pointOnCircle((degree + 180), 0.45, width, height);
+        var arrow4 = pointOnCircle((degree + 145), 0, width, height);
         return [arrow1, arrow2, arrow3, arrow4];
     }
 
     function onUpdate(dc) {
-        // System.println("View - Onupdate");
         var width = dc.getWidth();
         var height = dc.getHeight();
         var textCenter = Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER;
@@ -94,9 +92,9 @@ class windspeeddirectionView extends WatchUi.DataField {
         if (!System.getDeviceSettings().connectionAvailable) {
             message = "NO CONN";
         } else if ($.mostRecentData["last_updated"] != null) {
-            var lastUpdatedDisplay = $.mostRecentData["last_updated"].subtract(Time.now()).value();
-            if (lastUpdatedDisplay / 60 >= 15) {
-                message = (lastUpdatedDisplay / 60) + " MIN";
+            var lastUpdated = $.mostRecentData["last_updated"].subtract(Time.now()).value();
+            if (lastUpdated / 60 >= 15) {
+                message = (lastUpdated / 60) + " MIN";
             }
         } else {
             message = "NO DATA";

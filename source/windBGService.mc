@@ -16,6 +16,8 @@ class windBGService extends System.ServiceDelegate {
     }
 
     function requestWeatherData() {
+        if (!System.getDeviceSettings().connectionAvailable) {Background.exit(-1);}
+
         var dataSource = Storage.getValue("dataSource");
         var positionInfo = Position.getInfo().position.toDegrees();
         var apiKey = Storage.getValue(dataSource);

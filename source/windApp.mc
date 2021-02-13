@@ -55,7 +55,14 @@ class windApp extends Application.AppBase {
 
             setBackgroundUpdate(getProperty("updateFrequency"));
 
-            isCaching = getProperty("cacheClimaCell");
+            isCaching = getProperty("cacheForecast");
+
+            var intervalOptions = {
+                1 => 60,
+                2 => 30,
+                3 => 60
+            };
+            interval = intervalOptions[windDataSource];
 
         } catch (exception instanceof ObjectStoreAccessException) {
             // exception.printStackTrace();
@@ -105,9 +112,13 @@ class windApp extends Application.AppBase {
     function cacheWindData(data) {
         $.lastUpdated = new Time.Moment(Time.now().value());
         forecast = {};
-
-        for (var i = 0; i < data.size(); i++) {
-            forecast.put(i, data[i]);
+        
+        if ($.isCaching && data.size() > 1) {
+            for (var i = 0; i < data.size(); i++) {
+                forecast.put(i, data[i]);
+            }
+        } else {
+            forecast.put(0, data[0]);
         }
     }
 
@@ -131,7 +142,10 @@ class windApp extends Application.AppBase {
 
         var sec = $.lastUpdated.subtract(Time.now()).value();
         var entry = (sec / 60) / interval;
-        entry = entry.toNumber();
+        // entry = entry.toNumber();
+
+        entry = (entry >= forecast.size()) ? forecast.size() - 1 : entry;
+
         if (forecast.hasKey(entry)) {
             var current = forecast.get(entry);
             var converted = convertWindData(current["wind_speed"], current["wind_gust"]);

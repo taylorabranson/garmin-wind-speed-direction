@@ -142,8 +142,6 @@ class windApp extends Application.AppBase {
 
         var sec = $.lastUpdated.subtract(Time.now()).value();
         var entry = (sec / 60) / interval;
-        // entry = entry.toNumber();
-
         entry = (entry >= forecast.size()) ? forecast.size() - 1 : entry;
 
         if (forecast.hasKey(entry)) {

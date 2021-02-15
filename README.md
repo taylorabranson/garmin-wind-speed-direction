@@ -23,9 +23,8 @@ Side load application on device.
   - Show connection info if no connection available
   
 ### TODO
-
+  - Use wind forecast to provide wind data in absence of data connection
 
 ### Planned Features
-  - Use ClimaCell's wind forecast to provide wind data in absence of data connection
   - Show weather warning/alerts (if applicable)
   - MetaWeather API (maybe)

@@ -7,6 +7,8 @@ using Toybox.Position;
 (:background)
 class windBGService extends System.ServiceDelegate {
 
+    var data = {};
+
     function initialize() {
         System.ServiceDelegate.initialize();
     }
@@ -18,6 +20,7 @@ class windBGService extends System.ServiceDelegate {
     function requestWeatherData() {
         if (!System.getDeviceSettings().connectionAvailable) {Background.exit(-1);}
 
+        data = {};
         var dataSource = Storage.getValue("dataSource");
         var positionInfo = Position.getInfo().position.toDegrees();
         var apiKey = Storage.getValue(dataSource);
@@ -57,9 +60,12 @@ class windBGService extends System.ServiceDelegate {
                 responseCallBack = method(:onReceiveClimaCellResponse);
             } else if (dataSource.equals("weatherBitAPI")) {
                 //  API DOC: https://www.weatherbit.io/api/weather-current
+
+                // TODO: hourly forecast does not return current weather conditions
+                
                 url = ($.isCaching) ? 
                     "https://api.weatherbit.io/v2.0/forecast/hourly" :
-                    "https://api.weatherbit.io/v2.0/current";
+                    "https://api.weatherbit.io/v2.0/current";        
                 params = {
                     "lat" => positionInfo[0],
                     "lon" => positionInfo[1],
@@ -82,11 +88,12 @@ class windBGService extends System.ServiceDelegate {
 
     function onReceiveOpenWeatherResponse(responseCode, responseData) {
         if (responseCode == 200 && responseData != null) {
-            var data = {0 => {
+            data.put(0, {
                 "wind_speed" => responseData["current"]["wind_speed"],
                 "wind_gust" => responseData["current"]["wind_gust"],
                 "wind_deg" => responseData["current"]["wind_deg"]
-            }};
+            });
+
             Background.exit(data);
         } else {
             Background.exit(-1);
@@ -96,7 +103,6 @@ class windBGService extends System.ServiceDelegate {
     function onReceiveClimaCellResponse(responseCode, responseData) {
         if (responseCode == 200 && responseData != null) {
             var current = responseData["data"]["timelines"][0]["intervals"];
-            var data = {};
 
             for (var i = 0; i < current.size(); i++) {
                 data.put(i, {
@@ -116,7 +122,6 @@ class windBGService extends System.ServiceDelegate {
     function onReceiveWeatherBitResponse(responseCode, responseData) {
         if (responseCode == 200 && responseData != null) {
             var current = responseData["data"];
-            var data = {};
 
             for (var i = 0; i < current.size(); i++) {
                 data.put(i, {

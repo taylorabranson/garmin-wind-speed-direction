@@ -8,6 +8,16 @@ using Toybox.Position;
 class windBGService extends System.ServiceDelegate {
 
     var data = {};
+    var dataSource = Storage.getValue("dataSource");
+    var positionInfo = Position.getInfo().position.toDegrees();
+    var apiKey = Storage.getValue(dataSource);
+    var options = {
+        :method => Communications.HTTP_REQUEST_METHOD_GET,
+        :headers => {
+            "Content-Type" => Communications.REQUEST_CONTENT_TYPE_JSON
+            },
+        :responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_JSON	
+    };
 
     function initialize() {
         System.ServiceDelegate.initialize();
@@ -21,20 +31,12 @@ class windBGService extends System.ServiceDelegate {
         if (!System.getDeviceSettings().connectionAvailable) {Background.exit(-1);}
 
         data = {};
-        var dataSource = Storage.getValue("dataSource");
-        var positionInfo = Position.getInfo().position.toDegrees();
-        var apiKey = Storage.getValue(dataSource);
+
 
         if (positionInfo != null && apiKey != null && dataSource != null) {
             var url = null;
             var params = null;
-            var options = {
-                :method => Communications.HTTP_REQUEST_METHOD_GET,
-                :headers => {
-                    "Content-Type" => Communications.REQUEST_CONTENT_TYPE_JSON
-                    },
-                :responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_JSON	
-            };
+
             var responseCallBack = null;
 
             if (dataSource.equals("openWeatherAPI")) {
@@ -63,18 +65,13 @@ class windBGService extends System.ServiceDelegate {
 
                 // TODO: hourly forecast does not return current weather conditions
                 
-                url = ($.isCaching) ? 
-                    "https://api.weatherbit.io/v2.0/forecast/hourly" :
-                    "https://api.weatherbit.io/v2.0/current";        
+                url = "https://api.weatherbit.io/v2.0/current";        
                 params = {
                     "lat" => positionInfo[0],
                     "lon" => positionInfo[1],
                     "units" => "I",
                     "key" => apiKey
                 };
-                if ($.isCaching) {
-                    params.put("hours", 6);
-                }
                 responseCallBack = method(:onReceiveWeatherBitResponse);
             } else {
                 Background.exit(-1);
@@ -112,7 +109,6 @@ class windBGService extends System.ServiceDelegate {
                 });
             }
 
-
             Background.exit(data);
         } else {
             Background.exit(-1);
@@ -130,9 +126,40 @@ class windBGService extends System.ServiceDelegate {
                     "wind_gust" => current[i]["wind_gust_spd"]
                 });
             }
-            Background.exit(data);
+
+            if ($.isCaching) {
+                var apiKey = Storage.getValue(dataSource);
+                var url = "https://api.weatherbit.io/v2.0/forecast/hourly";
+                var params = {
+                    "lat" => positionInfo[0],
+                    "lon" => positionInfo[1],
+                    "units" => "I",
+                    "key" => apiKey,
+                    "hours" => 6
+                };
+                var responseCallBack = method(:onReceiveWeatherBitForecastResponse);
+                
+                Communications.makeWebRequest(url, params, options, responseCallBack);
+            } else {
+                Background.exit(data);
+            }
+
         } else {
             Background.exit(-1);
         }
+    }
+
+    function onReceiveWeatherBitForecastResponse(responseCode, responseData) {
+        if (responseCode == 200 && responseData != null && data.size() > 0) {
+            var hourly = responseData["data"];
+            for (var i = 0; i < hourly.size(); i++) {
+                data.put(data.size(), {
+                    "wind_speed" => hourly[i]["wind_spd"],
+                    "wind_deg" => hourly[i]["wind_dir"],
+                    "wind_gust" => hourly[i]["wind_gust_spd"]
+                });
+            }
+        }
+        Background.exit(data);
     }
 }

@@ -93,7 +93,7 @@ class windView extends WatchUi.DataField {
             message = "NO CONN";
         } else if ($.lastUpdated != null) {
             var sec = $.lastUpdated.subtract(Time.now()).value();
-            if (sec / 60 >= 0) {
+            if (sec / 60 >= 15) {
                 message = (sec / 60) + " MIN";
             }
         } else {

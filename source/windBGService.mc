@@ -30,14 +30,11 @@ class windBGService extends System.ServiceDelegate {
     function requestWeatherData() {
         if (!System.getDeviceSettings().connectionAvailable) {Background.exit(-1);}
 
-        data = {};
-
-
         if (positionInfo != null && apiKey != null && dataSource != null) {
             var url = null;
             var params = null;
-
             var responseCallBack = null;
+            data = {};
 
             if (dataSource.equals("openWeatherAPI")) {
                 // API DOC: https://openweathermap.org/api/one-call-api
